@@ -1,7 +1,7 @@
 {
   "name": "load-collada-dae",
   "version": "0.0.1",
-  "description": "Load the graphics buffer data from a wavefront .obj model and return a draw command that accepts options",
+  "description": "Load the WebGL graphics buffer data from a collada .dae model and return a draw command that accepts options",
   "main": "src/load-collada-dae.js",
   "scripts": {
     "test": "standard && tape test/**/*.js"

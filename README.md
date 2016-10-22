@@ -4,7 +4,7 @@ load-collada-dae [![npm version](https://badge.fury.io/js/load-collada-dae.svg)]
 WORK IN PROGRESS
 ================
 
-> Loads the graphics buffer data from a [.dae file](https://en.wikipedia.org/wiki/COLLADA) that's been parsed using a [.dae parser](https://github.com/chinedufn/collada-dae-parser) and return a draw command that accepts options
+> Loads the WebGL graphics buffer data from a [.dae file](https://en.wikipedia.org/wiki/COLLADA) that's been parsed using a [.dae parser](https://github.com/chinedufn/collada-dae-parser) and return a draw command that accepts options
 
 [TODO: View demo]()
 
@@ -48,15 +48,15 @@ See something broken, confusing or ripe for improvement? Feel free to open an is
 
 ## API
 
-### `loadDae(parsedWFJSON, options)` -> `object`
+### `loadDae(parsedDae, options)` -> `object`
 
-#### parsedWFJSON
+#### parsedDae
 
 *Required*
 
 Type: `string`
 
-A wavefront `.obj` file that has been parsed into JSON.
+A collada `.dae` file that has been parsed into JSON.
 
 Usually you'd use [collada-dae-parser](https://github.com/collada-dae-parser) to parser the `.dae` file pre-runtime.
 But any parser that outputs the same format will do.
