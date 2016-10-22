@@ -23,7 +23,7 @@ $ npm install --save load-collada-dae
 ```js
 var loadDae = require('load-collada-dae')
 
-// You would usually parse your .obj files before runtime and then `xhr` GET request the pre-parsed JSON
+// You would usually parse your .dae files before runtime and then `xhr` GET request the pre-parsed JSON
 var parseDae = require('collada-dae-parser')
 var modelJSON = parseDae(GetColladaFileSomehow())
 
