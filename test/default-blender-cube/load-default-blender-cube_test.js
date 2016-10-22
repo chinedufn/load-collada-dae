@@ -1,5 +1,7 @@
 var test = require('tape')
 var fs = require('fs')
+var path = require('path')
+
 var loadDae = require('../../')
 var parseDae = require('collada-dae-parser')
 
@@ -7,7 +9,6 @@ var createContext = require('gl')
 
 var ndarray = require('ndarray')
 var savePixels = require('save-pixels')
-
 var imageDiff = require('image-diff')
 
 // TODO: Not sure why the X and Y positions of the generated image are wrong
@@ -26,7 +27,7 @@ test('Default blender cube collada', function (t) {
 
   // Load and draw our collada model
   // In a real application you'll usually want to pre-parse your model before runtime using the CLI
-  var modelJSON = parseDae(fs.readFileSync('./default-blender-cube_fixture.dae').toString())
+  var modelJSON = parseDae(fs.readFileSync(path.resolve(__dirname, './default-blender-cube_fixture.dae')).toString())
   var model = loadDae(gl, modelJSON, {})
 
   model.draw({
@@ -38,17 +39,17 @@ test('Default blender cube collada', function (t) {
   var nd = ndarray(pixels, [canvasWidth, canvasHeight, 4])
 
   // Save the model that we just drew so that we can test it against our expected model
-  savePixels(nd, 'png').pipe(fs.createWriteStream('./tmp-actual.png'))
+  savePixels(nd, 'png').pipe(fs.createWriteStream(path.resolve(__dirname, './tmp-actual.png')))
 
   // Test that our actual rendered model matches our expected model fixture
   imageDiff({
-    actualImage: './tmp-actual.png',
-    expectedImage: './expected-default-blender-cube.png'
+    actualImage: path.resolve(__dirname, './tmp-actual.png'),
+    expectedImage: path.resolve(__dirname, './expected-default-blender-cube.png')
   }, function (err, imagesAreSame) {
     t.notOk(err, 'No error while comparing images')
     t.ok(imagesAreSame, 'Successfully rendered our default blender cube')
 
     // Delete our actual newly generated test cube
-    fs.unlinkSync('./tmp-actual.png')
+    fs.unlinkSync(path.resolve(__dirname, './tmp-actual.png'))
   })
 })
