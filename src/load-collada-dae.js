@@ -1,26 +1,36 @@
+var generateShader = require('./shader/generate-shader.js')
+var drawModel = require('./draw-model.js')
+
 module.exports = loadColladaDae
 
 function loadColladaDae (gl, modelJSON, loadOpts) {
-  var vertexPositionBuffer = gl.createBuffer()
-  gl.bindBuffer(gl.ARRAY_BUFFER, vertexPositionBuffer)
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(modelJSON.vertexPositions), gl.STATIC_DRAW)
+  var vertexPositionBuffer = createBuffer(gl, 'ARRAY_BUFFER', Float32Array, modelJSON.vertexPositions)
+  var vertexPositionIndexBuffer = createBuffer(gl, 'ELEMENT_ARRAY_BUFFER', Uint16Array, modelJSON.vertexPositionIndices)
+  var vertexNormalBuffer = createBuffer(gl, 'ARRAY_BUFFER', Float32Array, modelJSON.vertexNormals)
 
-  var vertexPositionIndexBuffer = gl.createBuffer()
-  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, vertexPositionIndexBuffer)
-  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(modelJSON.vertexPositionIndices), gl.STATIC_DRAW)
-
-  var vertexNormalBuffer = gl.createBuffer()
-  gl.bindBuffer(gl.ARRAY_BUFFER, vertexNormalBuffer)
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(modelJSON.vertexNormals), gl.STATIC_DRAW)
+  var shader = generateShader(gl, {})
 
   return {
     draw: drawModel.bind(null, gl, {
       vertexNormalBuffer: vertexNormalBuffer,
       vertexPositionBuffer: vertexPositionBuffer,
-      vertexPositionIndexBuffer: vertexPositionIndexBuffer
-    })
+      vertexPositionIndexBuffer: vertexPositionIndexBuffer,
+      shader: shader,
+      // Useful for knowing how many triangles to draw
+      numIndices: modelJSON.vertexPositionIndices.length
+    }),
+    // Useful for letting our consumer call gl.useProgram()
+    //  If they're drawing this model many times, they'll want to call `useProgram` themselves, only once, right before drawing
+    shaderProgram: shader.program
   }
 }
 
-function drawModel (gl, bufferData, drawOpts) {
+/*
+ * Used to create a new WebGL buffer for pushing data to the GPU
+ */
+function createBuffer (gl, bufferType, DataType, data) {
+  var buffer = gl.createBuffer()
+  gl.bindBuffer(gl[bufferType], buffer)
+  gl.bufferData(gl[bufferType], new DataType(data), gl.STATIC_DRAW)
+  return buffer
 }

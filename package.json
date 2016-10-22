@@ -32,7 +32,11 @@
     "collada-dae-parser": "^0.9.0",
     "get-pixels": "^3.3.0",
     "gl": "^4.0.2",
+    "gl-mat3": "^1.0.0",
+    "gl-mat4": "^1.1.4",
     "image-diff": "^1.6.3",
+    "ndarray": "^1.0.18",
+    "save-pixels": "^2.3.4",
     "standard": "^8.4.0",
     "tape": "^4.6.2"
   }
