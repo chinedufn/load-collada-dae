@@ -1,0 +1,38 @@
+{
+  "name": "load-collada-dae",
+  "version": "0.0.1",
+  "description": "Load the graphics buffer data from a wavefront .obj model and return a draw command that accepts options",
+  "main": "src/load-collada-dae.js",
+  "scripts": {
+    "test": "standard && tape test/**/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chinedufn/load-collada-dae.git"
+  },
+  "keywords": [
+    "collada",
+    "dae",
+    "load",
+    "3d",
+    "model",
+    "webgl",
+    "skeletal",
+    "skeleton",
+    "animation",
+    "skinning"
+  ],
+  "author": "Chinedu Francis Nwafili <frankie.nwafili@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/chinedufn/load-collada-dae/issues"
+  },
+  "homepage": "https://github.com/chinedufn/load-collada-dae#readme",
+  "devDependencies": {
+    "get-pixels": "^3.3.0",
+    "gl": "^4.0.2",
+    "image-diff": "^1.6.3",
+    "standard": "^8.4.0",
+    "tape": "^4.6.2"
+  }
+}
