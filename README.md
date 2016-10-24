@@ -148,6 +148,14 @@ Your ...
 - [ ] Demo using [regl](https://github.com/mikolalysenko/regl)
 - [ ] Add tests using `require('gl')` and test against expected `.png` file fixtures. [example](https://github.com/msfeldstein/interactive-shader-format-js/blob/v2/tests/renderer-test.js)
 
+## To Test:
+
+*Our test suite requires [imagemagick](http://www.imagemagick.org/script/index.php) to be installed locally, due to our `image-diff` dependency*
+
+```sh
+$ npm run test
+```
+
 ## See Also
 
 - [collada-dae-parser](https://github.com/chinedufn/collada-dae-parser)
