@@ -28,6 +28,8 @@ function generateShader (gl, opts) {
     pMatrixUniform: gl.getUniformLocation(shaderProgram, 'uPMatrix'),
     program: shaderProgram,
     vertexPositionAttribute: gl.getAttribLocation(shaderProgram, 'aVertexPosition'),
-    vertexNormalAttribute: gl.getAttribLocation(shaderProgram, 'aVertexNormal')
+    vertexNormalAttribute: gl.getAttribLocation(shaderProgram, 'aVertexNormal'),
+    vertexJointIndexAttribute: gl.getAttribLocation(shaderProgram, 'aJointIndex'),
+    vertexJointWeightAttribute: gl.getAttribLocation(shaderProgram, 'aJointWeight')
   }
 }

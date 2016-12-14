@@ -35,15 +35,27 @@ function drawModel (gl, bufferData, drawOpts) {
   gl.enableVertexAttribArray(bufferData.shader.vertexPositionAttribute)
   gl.vertexAttribPointer(bufferData.shader.vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0)
 
+  /*
+  // Vertex normals
   gl.bindBuffer(gl.ARRAY_BUFFER, bufferData.shader.vertexNormalBuffer)
   gl.enableVertexAttribArray(bufferData.shader.vertexNormalAttribute)
   gl.vertexAttribPointer(bufferData.shader.vertexNormalAttribute, 3, gl.FLOAT, false, 0, 0)
+  */
 
-  // Buffer normals
   // TODO: Need to use dual quaternions if we are not using matrices
   var normalMatrix = []
   mat3NormalFromMat4(normalMatrix, modelMatrix)
   gl.uniformMatrix3fv(bufferData.shader.nMatrixUniform, false, normalMatrix)
+
+  // Vertex joints
+  gl.bindBuffer(gl.ARRAY_BUFFER, bufferData.vertexJointIndexBuffer)
+  gl.enableVertexAttribArray(bufferData.shader.vertexJointIndexAttribute)
+  gl.vertexAttribPointer(bufferData.shader.vertexJointIndexAttribute, 4, gl.FLOAT, false, 0, 0)
+
+  // Vertex joint weights
+  gl.bindBuffer(gl.ARRAY_BUFFER, bufferData.weightBuffer)
+  gl.enableVertexAttribArray(bufferData.shader.vertexJointWeightAttribute)
+  gl.vertexAttribPointer(bufferData.shader.vertexJointWeightAttribute, 4, gl.FLOAT, false, 0, 0)
 
   // TODO: Just pre-multiply these?
   gl.uniformMatrix4fv(bufferData.shader.pMatrixUniform, false, drawOpts.perspective)
@@ -56,5 +68,7 @@ function drawModel (gl, bufferData, drawOpts) {
   // Clean up
   // TODO: Only disable when we're done re-drawing a model multiple times
   gl.disableVertexAttribArray(bufferData.shader.vertexPositionAttribute)
-  gl.disableVertexAttribArray(bufferData.shader.vertexNormalAttribute)
+  // gl.disableVertexAttribArray(bufferData.shader.vertexNormalAttribute)
+  gl.disableVertexAttribArray(bufferData.shader.vertexJointIndexAttribute)
+  gl.disableVertexAttribArray(bufferData.shader.vertexJointWeightAttribute)
 }
