@@ -57,6 +57,13 @@ function drawModel (gl, bufferData, drawOpts) {
   gl.enableVertexAttribArray(bufferData.shader.vertexJointWeightAttribute)
   gl.vertexAttribPointer(bufferData.shader.vertexJointWeightAttribute, 4, gl.FLOAT, false, 0, 0)
 
+  // Joint uniforms
+  // TODO: Don't hard code number of joints
+  for (var jointNum = 0; jointNum < 2; jointNum++) {
+    gl.uniform4fv(bufferData.shader['boneRotQuaternion' + jointNum], drawOpts.rotQuaternions[jointNum])
+    gl.uniform4fv(bufferData.shader['boneTransQuaternion' + jointNum], drawOpts.transQuaternions[jointNum])
+  }
+
   // TODO: Just pre-multiply these?
   gl.uniformMatrix4fv(bufferData.shader.pMatrixUniform, false, drawOpts.perspective)
   gl.uniformMatrix4fv(bufferData.shader.mvMatrixUniform, false, modelMatrix)

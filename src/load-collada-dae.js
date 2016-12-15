@@ -8,8 +8,8 @@ function loadColladaDae (gl, modelJSON, loadOpts) {
   var vertexData = expandVertices(modelJSON)
 
   var vertexPositionBuffer = createBuffer(gl, 'ARRAY_BUFFER', Float32Array, modelJSON.vertexPositions)
-  var vertexPositionIndexBuffer = createBuffer(gl, 'ELEMENT_ARRAY_BUFFER', Uint16Array, modelJSON.vertexPositionIndices)
-  var vertexNormalBuffer = createBuffer(gl, 'ARRAY_BUFFER', Float32Array, modelJSON.vertexNormals)
+  var vertexPositionIndexBuffer = createBuffer(gl, 'ELEMENT_ARRAY_BUFFER', Uint16Array, vertexData.vertexPositionIndices)
+  // var vertexNormalBuffer = createBuffer(gl, 'ARRAY_BUFFER', Float32Array, modelJSON.vertexNormals)
   var vertexJointIndexBuffer = createBuffer(gl, 'ARRAY_BUFFER', Float32Array, vertexData.vertexJointAffectors)
   var weightBuffer = createBuffer(gl, 'ARRAY_BUFFER', Float32Array, vertexData.vertexJointWeights)
 
@@ -17,7 +17,7 @@ function loadColladaDae (gl, modelJSON, loadOpts) {
 
   return {
     draw: drawModel.bind(null, gl, {
-      vertexNormalBuffer: vertexNormalBuffer,
+      // vertexNormalBuffer: vertexNormalBuffer,
       vertexPositionBuffer: vertexPositionBuffer,
       vertexPositionIndexBuffer: vertexPositionIndexBuffer,
       vertexJointIndexBuffer: vertexJointIndexBuffer,

@@ -29,6 +29,9 @@ test('Animated rectangular prism', function (t) {
   gl.enable(gl.DEPTH_TEST)
   gl.viewport(0, 0, canvasWidth, canvasHeight)
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+
+  // Log WebGL errors
+  // TODO: These should fail test
   gl = require('webgl-debug').makeDebugContext(gl, function (err, func, args) {
     console.log(require('webgl-debug').glEnumToString(err), func)
   })
@@ -43,10 +46,16 @@ test('Animated rectangular prism', function (t) {
   var jointDualQuats = convertMatricesToDualQuats(jointMatrices)
 
   model.draw({
-    position: [0, 0, -3.0],
+    position: [0.0, 0.0, -17.0],
     rotQuaternions: jointDualQuats.rotQuaternions,
     transQuaternions: jointDualQuats.transQuaternions
   })
+
+  var pixels = new Uint8Array(canvasWidth * canvasHeight * 4)
+  gl.readPixels(0, 0, canvasWidth, canvasHeight, gl.RGBA, gl.UNSIGNED_BYTE, pixels)
+  var nd = ndarray(pixels, [canvasWidth, canvasHeight, 4])
+
+  savePixels(nd, 'png').pipe(fs.createWriteStream(path.resolve(__dirname, './foo.png')))
 })
 
 function convertMatricesToDualQuats (jointMatrices) {

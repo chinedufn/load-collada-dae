@@ -9,13 +9,10 @@ function generateVertexShader (opts) {
   var vertexShader = `
     attribute vec3 aVertexPosition;
 
-    // attribute vec3 aVertexNormal;
     uniform mat3 uNMatrix;
 
     attribute vec4 aJointIndex;
     attribute vec4 aJointWeight;
-    uniform mat4 boneMatrices[${opts.numJoints}];
-    uniform mat4 boneNormals[${opts.numJoints}];
     uniform vec4 boneRotQuaternions[${opts.numJoints}];
     uniform vec4 boneTransQuaternions[${opts.numJoints}];
 

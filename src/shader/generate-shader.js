@@ -22,7 +22,7 @@ function generateShader (gl, opts) {
   gl.linkProgram(shaderProgram)
 
   // Return our shader object data
-  return {
+  var shaderObj = {
     mvMatrixUniform: gl.getUniformLocation(shaderProgram, 'uMVMatrix'),
     nMatrixUniform: gl.getUniformLocation(shaderProgram, 'uNMatrix'),
     pMatrixUniform: gl.getUniformLocation(shaderProgram, 'uPMatrix'),
@@ -32,4 +32,13 @@ function generateShader (gl, opts) {
     vertexJointIndexAttribute: gl.getAttribLocation(shaderProgram, 'aJointIndex'),
     vertexJointWeightAttribute: gl.getAttribLocation(shaderProgram, 'aJointWeight')
   }
+
+  // TODO: Don't hard code # of joints
+  for (var jointNum = 0; jointNum < 2; jointNum++) {
+    // Split our dual quaternion into two vec4's since we can't use mat2x4 in WebGL
+    shaderObj['boneRotQuaternion' + jointNum] = gl.getUniformLocation(shaderProgram, 'boneRotQuaternions[' + jointNum + ']')
+    shaderObj['boneTransQuaternion' + jointNum] = gl.getUniformLocation(shaderProgram, 'boneTransQuaternions[' + jointNum + ']')
+  }
+
+  return shaderObj
 }
