@@ -16,6 +16,8 @@ var quatMultiply = require('gl-quat/multiply')
 var quatFromMat3 = require('gl-quat/fromMat3')
 var quatScale = require('gl-quat/scale')
 
+var webglDebug = require('webgl-debug')
+
 // TODO: Not sure why the X and Y positions of the generated image are wrong
 //  When using a real canvas WebGL context in the browser we aren't having any issues
 test('Animated rectangular prism', function (t) {
@@ -31,9 +33,8 @@ test('Animated rectangular prism', function (t) {
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
   // Log WebGL errors
-  // TODO: These should fail test
   gl = require('webgl-debug').makeDebugContext(gl, function (err, func, args) {
-    console.log(require('webgl-debug').glEnumToString(err), func)
+    t.fail(webglDebug.glEnumToString(err), func)
   })
 
   // Load and draw our collada model
@@ -55,7 +56,20 @@ test('Animated rectangular prism', function (t) {
   gl.readPixels(0, 0, canvasWidth, canvasHeight, gl.RGBA, gl.UNSIGNED_BYTE, pixels)
   var nd = ndarray(pixels, [canvasWidth, canvasHeight, 4])
 
-  savePixels(nd, 'png').pipe(fs.createWriteStream(path.resolve(__dirname, './foo.png')))
+  // Save the model that we just drew so that we can test it against our expected model
+  savePixels(nd, 'png').pipe(fs.createWriteStream(path.resolve(__dirname, './tmp-actual.png')))
+
+  // Test that our actual rendered model matches our expected model fixture
+  imageDiff({
+    actualImage: path.resolve(__dirname, './tmp-actual.png'),
+    expectedImage: path.resolve(__dirname, './expected-animated-bending-rectangular-prism_fixture.png')
+  }, function (err, imagesAreSame) {
+    t.notOk(err, 'No error while comparing images')
+    t.ok(imagesAreSame, 'Successfully rendered our default blender cube')
+
+    // Delete our actual newly generated test cube
+    fs.unlinkSync(path.resolve(__dirname, './tmp-actual.png'))
+  })
 })
 
 function convertMatricesToDualQuats (jointMatrices) {
