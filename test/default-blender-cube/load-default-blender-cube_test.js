@@ -1,3 +1,13 @@
+// So we're removing the ability to load models that do not have skeletons.
+// The reasons are
+//  1. I don't feel like handling this condition right now
+//  2. You can use load-wavefront-obj for non skeletal animation models
+//  3. Having to support static models is extra work for potentially marginal gains.
+//      Open so supporting it in the future if myself or others run into a good use case,
+//      but for now I'll be using load-wavefront-obj for static models and load-collada-dae
+//      for skinned models
+
+/*
 var test = require('tape')
 var fs = require('fs')
 var path = require('path')
@@ -53,3 +63,4 @@ test('Default blender cube collada', function (t) {
     fs.unlinkSync(path.resolve(__dirname, './tmp-actual.png'))
   })
 })
+*/
