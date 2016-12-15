@@ -13,7 +13,7 @@ function loadColladaDae (gl, modelJSON, loadOpts) {
   var vertexJointIndexBuffer = createBuffer(gl, 'ARRAY_BUFFER', Float32Array, vertexData.vertexJointAffectors)
   var weightBuffer = createBuffer(gl, 'ARRAY_BUFFER', Float32Array, vertexData.vertexJointWeights)
 
-  var shader = generateShader(gl, {})
+  var shader = generateShader(gl, {numJoints: vertexData.numJoints})
 
   return {
     draw: drawModel.bind(null, gl, {
@@ -24,7 +24,8 @@ function loadColladaDae (gl, modelJSON, loadOpts) {
       weightBuffer: weightBuffer,
       shader: shader,
       // Useful for knowing how many triangles to draw
-      numIndices: modelJSON.vertexPositionIndices.length
+      numIndices: modelJSON.vertexPositionIndices.length,
+      numJoints: vertexData.numJoints
     }),
     // Useful for letting our consumer call gl.useProgram()
     //  If they're drawing this model many times, they'll want to call `useProgram` themselves, only once, right before drawing

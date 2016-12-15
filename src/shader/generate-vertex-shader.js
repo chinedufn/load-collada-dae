@@ -1,10 +1,6 @@
 module.exports = generateVertexShader
 
 function generateVertexShader (opts) {
-  // TODO: This should get passed in. Hard coded while we're trying to
-  // get tests to pass
-  opts.numJoints = 2
-
   // TODO: Optimize code after tests pass and benchmarks are in place
   var vertexShader = `
     attribute vec3 aVertexPosition;
@@ -47,7 +43,7 @@ function generateVertexShader (opts) {
         rotQuaternion[2] * aJointWeight.z +
         rotQuaternion[3] * aJointWeight.w;
 
-      vec4 weightedTransQuat = transQuaternion[0] + aJointWeight.x +
+      vec4 weightedTransQuat = transQuaternion[0] * aJointWeight.x +
         transQuaternion[1] * aJointWeight.y +
         transQuaternion[2] * aJointWeight.z +
         transQuaternion[3] * aJointWeight.w;

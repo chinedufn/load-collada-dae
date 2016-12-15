@@ -2,7 +2,6 @@ var mat4Create = require('gl-mat4/create')
 var mat4Multiply = require('gl-mat4/multiply')
 var mat4Perspective = require('gl-mat4/perspective')
 var mat4Translate = require('gl-mat4/translate')
-var mat3NormalFromMat4 = require('gl-mat3/normal-from-mat4')
 
 module.exports = drawModel
 
@@ -42,11 +41,6 @@ function drawModel (gl, bufferData, drawOpts) {
   gl.vertexAttribPointer(bufferData.shader.vertexNormalAttribute, 3, gl.FLOAT, false, 0, 0)
   */
 
-  // TODO: Need to use dual quaternions if we are not using matrices
-  var normalMatrix = []
-  mat3NormalFromMat4(normalMatrix, modelMatrix)
-  gl.uniformMatrix3fv(bufferData.shader.nMatrixUniform, false, normalMatrix)
-
   // Vertex joints
   gl.bindBuffer(gl.ARRAY_BUFFER, bufferData.vertexJointIndexBuffer)
   gl.enableVertexAttribArray(bufferData.shader.vertexJointIndexAttribute)
@@ -59,7 +53,7 @@ function drawModel (gl, bufferData, drawOpts) {
 
   // Joint uniforms
   // TODO: Don't hard code number of joints
-  for (var jointNum = 0; jointNum < 2; jointNum++) {
+  for (var jointNum = 0; jointNum < bufferData.numJoints; jointNum++) {
     gl.uniform4fv(bufferData.shader['boneRotQuaternion' + jointNum], drawOpts.rotQuaternions[jointNum])
     gl.uniform4fv(bufferData.shader['boneTransQuaternion' + jointNum], drawOpts.transQuaternions[jointNum])
   }
