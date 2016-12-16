@@ -1,9 +1,29 @@
 module.exports = generateVertexShader
 
+// TODO: Add comments
+// TODO: Add documentation
+//   - dual quaternion linear blending
+//   - conditional texturing
 function generateVertexShader (opts) {
+  var textureVars = ''
+  var varyingStatement = ''
+
+  if (opts.texture) {
+    textureVars = `
+      attribute vec2 aTextureCoord;
+      varying vec2 vTextureCoord;
+    `
+
+    varyingStatement = `
+      vTextureCoord = aTextureCoord;
+    `
+  }
+
   // TODO: Optimize code after tests pass and benchmarks are in place
   var vertexShader = `
     attribute vec3 aVertexPosition;
+
+    ${textureVars}
 
     uniform mat3 uNMatrix;
 
@@ -94,6 +114,8 @@ function generateVertexShader (opts) {
       float z = -leftWorldSpace.y;
       leftWorldSpace.y = y;
       leftWorldSpace.z = z;
+
+      ${varyingStatement}
 
       gl_Position = uPMatrix * uMVMatrix * leftWorldSpace;
     }

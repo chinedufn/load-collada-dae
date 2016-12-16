@@ -3,10 +3,12 @@
 module.exports = expandVertices
 
 // Takes our parsed data and expands the vertex data using our uv/vertex/normal index data
-function expandVertices (parsedDae) {
+function expandVertices (parsedDae, opts) {
   // Vertex normals
   // TODO: Comment this
   var vertexNormals = []
+
+  var vertexUVs = []
 
   // TODO: naming
   var vertexJointAffectors = []
@@ -36,6 +38,9 @@ function expandVertices (parsedDae) {
       for (var i = 0; i < 4; i++) {
         if (i < 3) {
           vertexNormals[vertexPositionIndex * 3 + i] = parsedDae.vertexNormals[parsedDae.vertexNormalIndices[counter] * 3 + i]
+          if (i < 2 && opts.hasTexture) {
+            vertexUVs[vertexPositionIndex * 2 + i] = parsedDae.vertexUVs[parsedDae.vertexUVIndices[counter] * 2 + i]
+          }
         }
         var jointIndex = Object.keys(jointsAndWeights)[i]
         // TODO: Should zero be -1? It will have a zero weight regardless, but that lets us distinguish between empty bone slots and zero index bone slots
@@ -53,6 +58,9 @@ function expandVertices (parsedDae) {
         if (i < 3) {
           parsedDae.vertexPositions[largestPositionIndex * 3 + i] = parsedDae.vertexPositions[vertexPositionIndex * 3 + i]
           vertexNormals[largestPositionIndex * 3 + i] = parsedDae.vertexNormals[parsedDae.vertexNormalIndices[counter] * 3 + i]
+          if (i < 2 && opts.hasTexture) {
+            vertexUVs[largestPositionIndex * 2 + i] = parsedDae.vertexUVs[parsedDae.vertexUVIndices[counter] * 2 + i]
+          }
         }
         var jointIndex = Object.keys(jointsAndWeights)[i]
         // TODO: Should zero be -1? It will have a zero weight regardless, but that lets us distinguish between empty bone slots and zero index bone slots
@@ -74,7 +82,8 @@ function expandVertices (parsedDae) {
     vertexNormals: vertexNormals,
     vertexPositionIndices: vertexPositionIndices,
     vertexJointAffectors: vertexJointAffectors,
-    vertexJointWeights: vertexJointWeights
+    vertexJointWeights: vertexJointWeights,
+    vertexUVs: vertexUVs
   }
 }
 
