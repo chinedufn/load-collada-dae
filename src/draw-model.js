@@ -34,6 +34,19 @@ function drawModel (gl, bufferData, drawOpts) {
   gl.enableVertexAttribArray(bufferData.shader.vertexPositionAttribute)
   gl.vertexAttribPointer(bufferData.shader.vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0)
 
+  // TODO: Instead of having if statements we should generate our JavaScript
+  //  Haven't done this before.. maybe we can use eval?
+  if (bufferData.modelTexture) {
+    // Texture
+    gl.bindBuffer(gl.ARRAY_BUFFER, bufferData.vertexTextureBuffer)
+    gl.enableVertexAttribArray(bufferData.shader.textureCoordAttribute)
+    gl.vertexAttribPointer(bufferData.shader.textureCoordAttribute, 2, gl.FLOAT, false, 0, 0)
+
+    gl.activeTexture(gl.TEXTURE0)
+    gl.bindTexture(gl.TEXTURE_2D, bufferData.modelTexture)
+    gl.uniform1i(bufferData.shader.samplerUniform, 0)
+  }
+
   /*
   // Vertex normals
   gl.bindBuffer(gl.ARRAY_BUFFER, bufferData.shader.vertexNormalBuffer)
@@ -72,4 +85,5 @@ function drawModel (gl, bufferData, drawOpts) {
   // gl.disableVertexAttribArray(bufferData.shader.vertexNormalAttribute)
   gl.disableVertexAttribArray(bufferData.shader.vertexJointIndexAttribute)
   gl.disableVertexAttribArray(bufferData.shader.vertexJointWeightAttribute)
+  gl.disableVertexAttribArray(bufferData.shader.textureCoordAttribute)
 }

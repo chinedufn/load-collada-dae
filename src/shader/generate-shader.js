@@ -32,6 +32,11 @@ function generateShader (gl, opts) {
     vertexJointWeightAttribute: gl.getAttribLocation(shaderProgram, 'aJointWeight')
   }
 
+  if (opts.texture) {
+    shaderObj.samplerUniform = gl.getUniformLocation(shaderProgram, 'uSampler')
+    shaderObj.textureCoordAttribute = gl.getAttribLocation(shaderProgram, 'aTextureCoord')
+  }
+
   // TODO: Don't hard code # of joints
   for (var jointNum = 0; jointNum < opts.numJoints; jointNum++) {
     // Split our dual quaternion into two vec4's since we can't use mat2x4 in WebGL
