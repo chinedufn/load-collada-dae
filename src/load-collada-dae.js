@@ -24,7 +24,12 @@ function loadColladaDae (gl, modelJSON, loadOpts) {
     modelTexture = initTexture(gl, loadOpts)
   }
 
-  var shader = generateShader(gl, {numJoints: vertexData.numJoints, texture: !!loadOpts.texture})
+  var shader = generateShader(gl, {
+    fragmentShaderFunc: loadOpts.fragmentShaderFunc,
+    vertexShaderFunc: loadOpts.vertexShaderFunc,
+    numJoints: vertexData.numJoints,
+    texture: !!loadOpts.texture
+  })
 
   return {
     draw: drawModel.bind(null, gl, {

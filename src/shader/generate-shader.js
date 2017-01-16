@@ -4,16 +4,18 @@ var generateVertexShader = require('./generate-vertex-shader.js')
 module.exports = generateShader
 
 /*
- * Generate a shader that's optimized for drawing the particular model
+ * Generate a shader that's for drawing a skinned model
  */
 // TODO: Pull out into separate, tested shader generation repository
 function generateShader (gl, opts) {
   var fragmentShader = gl.createShader(gl.FRAGMENT_SHADER)
-  gl.shaderSource(fragmentShader, generateFragmentShader(opts))
+  var fragmentShaderString = opts.fragmentShaderFunc(opts) || generateFragmentShader(opts)
+  gl.shaderSource(fragmentShader, fragmentShaderString)
   gl.compileShader(fragmentShader)
 
   var vertexShader = gl.createShader(gl.VERTEX_SHADER)
-  gl.shaderSource(vertexShader, generateVertexShader(opts))
+  var vertexShaderString = opts.vertexShaderFunc(opts) || generateVertexShader(opts)
+  gl.shaderSource(vertexShader, vertexShaderString)
   gl.compileShader(vertexShader)
 
   var shaderProgram = gl.createProgram()

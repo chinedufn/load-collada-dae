@@ -9,12 +9,8 @@ var ndarray = require('ndarray')
 var savePixels = require('save-pixels')
 var imageDiff = require('image-diff')
 
-var mat3FromMat4 = require('gl-mat3/from-mat4')
-var quatMultiply = require('gl-quat/multiply')
-var quatFromMat3 = require('gl-quat/fromMat3')
-var quatScale = require('gl-quat/scale')
-
 var createWebGLContext = require('../test-utils/create-webgl-context.js')
+var keyframesToDualQuats = require('../test-utils/keyframes-to-dual-quats.js')
 
 // TODO: Not sure why the X and Y positions of the generated image are wrong
 //  When using a real canvas WebGL context in the browser we aren't having any issues
@@ -44,7 +40,7 @@ test('Animated textured rectangular prism', function (t) {
 
   // All of the joint matrices at animation time zero
   var jointMatrices = modelJSON.keyframes[0]
-  var jointDualQuats = convertMatricesToDualQuats(jointMatrices)
+  var jointDualQuats = keyframesToDualQuats(jointMatrices)
 
   model.draw({
     position: [0.0, 0.0, -17.0],
@@ -65,31 +61,9 @@ test('Animated textured rectangular prism', function (t) {
     expectedImage: path.resolve(__dirname, './expected-animated-bending-rectangular-prism_fixture.png')
   }, function (err, imagesAreSame) {
     t.notOk(err, 'No error while comparing images')
-    t.ok(imagesAreSame, 'Successfully rendered our default blender cube')
+    t.ok(imagesAreSame, 'Successfully rendered our animated bending rectangular prism')
 
     // Delete our actual newly generated test cube
     fs.unlinkSync(path.resolve(__dirname, './tmp-actual.png'))
   })
 })
-
-function convertMatricesToDualQuats (jointMatrices) {
-  var rotQuaternions = []
-  var transQuaternions = []
-
-  jointMatrices.forEach(function (joint, index) {
-    // Create our dual quaternion
-    var rotationMatrix = mat3FromMat4([], joint)
-    var rotationQuat = quatFromMat3([], rotationMatrix)
-    var transVec = [joint[12], joint[13], joint[14], 0]
-    var transQuat = quatScale([], quatMultiply([], transVec, rotationQuat), 0.5)
-
-    rotQuaternions.push(rotationQuat)
-    transQuaternions.push(transQuat)
-  })
-
-  return {
-    rotQuaternions: rotQuaternions,
-    transQuaternions: transQuaternions
-  }
-}
-

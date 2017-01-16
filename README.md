@@ -48,7 +48,7 @@ See something broken, confusing or ripe for improvement? Feel free to open an is
 
 ## API
 
-### `loadDae(parsedDae, options)` -> `object`
+### `loadDae(parsedDae, loadOptions)` -> `object`
 
 #### parsedDae
 
@@ -61,7 +61,7 @@ A collada `.dae` file that has been parsed into JSON.
 Usually you'd use [collada-dae-parser](https://github.com/collada-dae-parser) to parser the `.dae` file pre-runtime.
 But any parser that outputs the same format will do.
 
-#### Options
+#### loadOptions
 
 *Optional*
 
@@ -75,7 +75,7 @@ var myOptions = {
 }
 ```
 
-##### textureImage
+##### loadOptions.textureImage
 
 *type* `HTMLImageElement` or `Uint8Array`
 
@@ -93,6 +93,18 @@ image.src = 'https://cool-image-texture.com/cool-image.jpg'
 ```
 
 TODO: Uint8Array example
+
+##### loadOptions.fragmentShaderFunc
+
+*Optional*
+
+lorem ipsum...
+
+##### loadOptions.vertexShaderFunc
+
+*Optional*
+
+lorem ipsum...
 
 ### Returned Model Object
 
