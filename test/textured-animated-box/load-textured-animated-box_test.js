@@ -5,8 +5,6 @@ var path = require('path')
 var loadDae = require('../../')
 var parseDae = require('collada-dae-parser')
 
-var createContext = require('gl')
-
 var ndarray = require('ndarray')
 var savePixels = require('save-pixels')
 var imageDiff = require('image-diff')
@@ -16,26 +14,16 @@ var quatMultiply = require('gl-quat/multiply')
 var quatFromMat3 = require('gl-quat/fromMat3')
 var quatScale = require('gl-quat/scale')
 
-var webglDebug = require('webgl-debug')
+var createWebGLContext = require('../test-utils/create-webgl-context.js')
 
 // TODO: Not sure why the X and Y positions of the generated image are wrong
 //  When using a real canvas WebGL context in the browser we aren't having any issues
 test('Animated textured rectangular prism', function (t) {
   t.plan(2)
+
+  var gl = createWebGLContext()
   var canvasWidth = 256
   var canvasHeight = 256
-
-  // 256 * 256 canvas with a black background
-  var gl = createContext(canvasWidth, canvasHeight)
-  gl.clearColor(0, 0, 0, 1)
-  gl.enable(gl.DEPTH_TEST)
-  gl.viewport(0, 0, canvasWidth, canvasHeight)
-  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
-
-  // Log WebGL errors
-  gl = require('webgl-debug').makeDebugContext(gl, function (err, func, args) {
-    t.fail(webglDebug.glEnumToString(err), func)
-  })
 
   // Generate some image data since `require('gl)` only allows Uint8Array texture data
   var imageData = new Uint8Array(canvasWidth * canvasHeight * 4)
