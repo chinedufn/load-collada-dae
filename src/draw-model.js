@@ -3,12 +3,19 @@ var mat4Multiply = require('gl-mat4/multiply')
 var mat4Perspective = require('gl-mat4/perspective')
 var mat4Translate = require('gl-mat4/translate')
 
+var mat4RotateX = require('gl-mat4/rotateX')
+var mat4RotateY = require('gl-mat4/rotateY')
+var mat4RotateZ = require('gl-mat4/rotateZ')
+
 module.exports = drawModel
 
 var defaultDrawOpts = {
   perspective: mat4Perspective([], Math.PI / 4, 256 / 256, 0.1, 100),
   position: [0.0, 0.0, -5.0],
-  viewMatrix: mat4Create()
+  viewMatrix: mat4Create(),
+  xRotation: 0.0,
+  yRotation: 0.0,
+  zRotation: 0.0
 }
 
 /*
@@ -22,6 +29,13 @@ function drawModel (gl, bufferData, drawOpts) {
   // Move our model to the specified position
   var modelMatrix = mat4Create()
   mat4Translate(modelMatrix, modelMatrix, drawOpts.position)
+
+  // Rotate the model in place. If you want to rotate that about an axis
+  // you can handle externally and then pass in the corresponding position
+  mat4RotateX(modelMatrix, modelMatrix, drawOpts.xRotation)
+  mat4RotateY(modelMatrix, modelMatrix, drawOpts.yRotation)
+  mat4RotateZ(modelMatrix, modelMatrix, drawOpts.zRotation)
+
   mat4Multiply(modelMatrix, drawOpts.viewMatrix, modelMatrix)
 
   // TODO: Should we just let the consumer handle this?

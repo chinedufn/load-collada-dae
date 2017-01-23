@@ -9,12 +9,12 @@ module.exports = generateShader
 // TODO: Pull out into separate, tested shader generation repository
 function generateShader (gl, opts) {
   var fragmentShader = gl.createShader(gl.FRAGMENT_SHADER)
-  var fragmentShaderString = opts.fragmentShaderFunc(opts) || generateFragmentShader(opts)
+  var fragmentShaderString = (opts.fragmentShaderFunc || generateFragmentShader)(opts)
   gl.shaderSource(fragmentShader, fragmentShaderString)
   gl.compileShader(fragmentShader)
 
   var vertexShader = gl.createShader(gl.VERTEX_SHADER)
-  var vertexShaderString = opts.vertexShaderFunc(opts) || generateVertexShader(opts)
+  var vertexShaderString = (opts.vertexShaderFunc || generateVertexShader)(opts)
   gl.shaderSource(vertexShader, vertexShaderString)
   gl.compileShader(vertexShader)
 

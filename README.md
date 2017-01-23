@@ -110,48 +110,69 @@ lorem ipsum...
 
 We return a `model` object with a `draw` function
 
-#### `model.draw([options])` -> `render to canvas`
+#### `model.draw([drawOptions])` -> `render to canvas`
 
-##### Options
+##### drawOptions
 
 ```js
 // Example overrides
 var myOptions = {
   perspective: require('gl-mat4/perspective')([], Math.PI / 3, 512 / 512, 0.1, 30),
   position: [5.0, 1.0, -20.0],
-  viewMatrix: [1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 10, 10, 1]
+  viewMatrix: [1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 10, 10, 1],
+  xRotation: Math.PI / 3,
+  yRotation: Math.PI / 2,
+  zRotation: Math.PI / 4
 }
 ```
 
-###### perspective
+###### drawOptions.perspective
 
-Type: [mat4](https://github.com/stackgl/gl-mat4)
+Type: Array[16]
 
-Default: `mat4Perspective([], Math.PI / 4, 256 / 256, 0.1, 100)`
+Default: `require('gl-mat4/perspective')([], Math.PI / 4, 256 / 256, 0.1, 100)`
 
 Your perspective matrix
 
-###### position
+###### drawOptions.position
 
-Type: `Array`
+Type: `Array[3]`
 
 Default: `[0.0, 0.0, -5.0]`
 
 The x, y and z position of your model in the world.
 
-###### viewMatrix
+###### drawOptions.viewMatrix
 
-Type: `Array`
+Type: `Array[16]`
 
 Default: `[1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1]` (Identity Matrix)
 
 Your camera's view matrix
 
-##### interpolatedDualQuaternions
+##### drawOptions.interpolatedDualQuaternions
 
-type; `Array`
+type: `Array[n][8]`
 
-Your ...
+lorem ipsum
+
+##### drawOptions.xRotation
+
+type: `Number (radians)`
+
+lorem ipsum
+
+##### drawOptions.yRotation
+
+type: `Number (radians)`
+
+lorem ipsum
+
+##### drawOptions.zRotation
+
+type: `Number (radians)`
+
+lorem ipsum
 
 ## TODO:
 
