@@ -19,9 +19,16 @@ function generateVertexShader (opts) {
     `
   }
 
-  // TODO: Optimize code after tests pass and benchmarks are in place
+  // TODO: Optimize default shader after benchmarks are in place
   var vertexShader = `
     attribute vec3 aVertexPosition;
+    attribute vec3 aVertexNormal;
+
+    // Lighting
+    uniform vec3 uAmbientColor;
+    uniform vec3 uLightingDirection;
+    uniform vec3 uDirectionalColor;
+    varying vec3 vLightWeighting;
 
     ${textureVars}
 
@@ -114,6 +121,19 @@ function generateVertexShader (opts) {
       float z = -leftWorldSpace.y;
       leftWorldSpace.y = y;
       leftWorldSpace.z = z;
+
+      if (uUseLighting) {
+        vec3 transformedNormal = (weightedMatrix * vec4(aVertexNormal, 0.0)).xyz;
+        y = transformedNormal.z;
+        z = -transformedNormal.y;
+        transformedNormal.y = y;
+        transformedNormal.z = z;
+
+        float directionalLightWeighting = max(dot(transformedNormal, uLightingDirection), 0.0);
+        vLightWeighting = uAmbientColor + uDirectionalColor * directionalLightWeighting;
+      } else {
+        vLightWeighting = vec3(1.0, 1.0, 1.0);
+      }
 
       ${varyingStatement}
 

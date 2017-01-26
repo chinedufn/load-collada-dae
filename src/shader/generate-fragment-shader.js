@@ -17,14 +17,14 @@ function generateFragmentShader (opts) {
     // TODO: Lighting
     assignFragColor = `
       vec4 textureColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
-      gl_FragColor = vec4(textureColor.rgb, textureColor.a);
+      gl_FragColor = vec4(textureColor.rgb * vLightWeighting, textureColor.a);
 
     `
   } else {
     // If there is no texture for now we just make the model white
     // later we'll introduce normals and lighting
     assignFragColor = `
-      gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+      gl_FragColor = vec4(vLightWeighting, 1.0);
     `
   }
 
