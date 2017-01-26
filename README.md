@@ -176,10 +176,7 @@ lorem ipsum
 
 ## TODO:
 
-- [ ] Finish the first iteration of the draw function with unit tests
-- [ ] Demo in raw WebGL
-- [ ] Demo using [regl](https://github.com/mikolalysenko/regl)
-- [ ] Add tests using `require('gl')` and test against expected `.png` file fixtures. [example](https://github.com/msfeldstein/interactive-shader-format-js/blob/v2/tests/renderer-test.js)
+- [ ] Demo in raw WebGL using an orbiting light source and materials
 
 ## To Test:
 
