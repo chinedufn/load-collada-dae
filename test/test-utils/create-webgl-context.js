@@ -17,9 +17,15 @@ function createWebGLContext () {
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
   // Log WebGL errors
-  gl = require('webgl-debug').makeDebugContext(gl, function (err, func, args) {
-    throw new Error(webglDebug.glEnumToString(err) + ' ' + func)
-  })
+  gl = webglDebug.makeDebugContext(gl, function (err, func, args) {
+    console.log('Error from call to ' + func + ':')
+    throw webglDebug.glEnumToString(err)
+  }, logEveryCall)
+
+  function logEveryCall (functionName, args) {
+    // Uncomment this to debug errors
+    console.log('gl.' + functionName + '(' + webglDebug.glFunctionArgsToString(functionName, args) + ')')
+  }
 
   return gl
 }

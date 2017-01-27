@@ -25,6 +25,7 @@ function generateVertexShader (opts) {
     attribute vec3 aVertexNormal;
 
     // Lighting
+    uniform bool uUseLighting;
     uniform vec3 uAmbientColor;
     uniform vec3 uLightingDirection;
     uniform vec3 uDirectionalColor;

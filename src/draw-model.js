@@ -7,12 +7,18 @@ var mat4RotateX = require('gl-mat4/rotateX')
 var mat4RotateY = require('gl-mat4/rotateY')
 var mat4RotateZ = require('gl-mat4/rotateZ')
 
+var vec3Normalize = require('gl-vec3/normalize')
+var vec3Scale = require('gl-vec3/scale')
+
 module.exports = drawModel
 
 var defaultDrawOpts = {
   perspective: mat4Perspective([], Math.PI / 4, 256 / 256, 0.1, 100),
   position: [0.0, 0.0, -5.0],
   viewMatrix: mat4Create(),
+  lighting: {
+    useLighting: false
+  },
   xRotation: 0.0,
   yRotation: 0.0,
   zRotation: 0.0
@@ -61,12 +67,10 @@ function drawModel (gl, bufferData, drawOpts) {
     gl.uniform1i(bufferData.shader.samplerUniform, 0)
   }
 
-  /*
   // Vertex normals
-  gl.bindBuffer(gl.ARRAY_BUFFER, bufferData.shader.vertexNormalBuffer)
+  gl.bindBuffer(gl.ARRAY_BUFFER, bufferData.vertexNormalBuffer)
   gl.enableVertexAttribArray(bufferData.shader.vertexNormalAttribute)
   gl.vertexAttribPointer(bufferData.shader.vertexNormalAttribute, 3, gl.FLOAT, false, 0, 0)
-  */
 
   // Vertex joints
   gl.bindBuffer(gl.ARRAY_BUFFER, bufferData.vertexJointIndexBuffer)
@@ -79,13 +83,23 @@ function drawModel (gl, bufferData, drawOpts) {
   gl.vertexAttribPointer(bufferData.shader.vertexJointWeightAttribute, 4, gl.FLOAT, false, 0, 0)
 
   // Joint uniforms
-  // TODO: Don't hard code number of joints
   for (var jointNum = 0; jointNum < bufferData.numJoints; jointNum++) {
     gl.uniform4fv(bufferData.shader['boneRotQuaternion' + jointNum], drawOpts.rotQuaternions[jointNum])
     gl.uniform4fv(bufferData.shader['boneTransQuaternion' + jointNum], drawOpts.transQuaternions[jointNum])
   }
 
-  // TODO: Just pre-multiply these?
+  // Lighting
+  var lightingDirection = [1, -0.5, -1]
+  var normalizedLD = []
+  vec3Normalize(normalizedLD, lightingDirection)
+  vec3Scale(normalizedLD, normalizedLD, -1)
+
+  gl.uniform3fv(bufferData.shader.ambientColorUniform, [0.5, 0.5, 0.5])
+  gl.uniform3fv(bufferData.shader.lightingDirectionUniform, normalizedLD)
+  gl.uniform3f(bufferData.shader.directionalColorUniform, 1.0, 1.0, 1.0)
+  gl.uniform1i(bufferData.shader.useLightingUniform, drawOpts.lighting.useLighting)
+
+  // Model-view and perspective matrices
   gl.uniformMatrix4fv(bufferData.shader.pMatrixUniform, false, drawOpts.perspective)
   gl.uniformMatrix4fv(bufferData.shader.mvMatrixUniform, false, modelMatrix)
 
@@ -96,7 +110,7 @@ function drawModel (gl, bufferData, drawOpts) {
   // Clean up
   // TODO: Only disable when we're done re-drawing a model multiple times
   gl.disableVertexAttribArray(bufferData.shader.vertexPositionAttribute)
-  // gl.disableVertexAttribArray(bufferData.shader.vertexNormalAttribute)
+  gl.disableVertexAttribArray(bufferData.shader.vertexNormalAttribute)
   gl.disableVertexAttribArray(bufferData.shader.vertexJointIndexAttribute)
   gl.disableVertexAttribArray(bufferData.shader.vertexJointWeightAttribute)
   gl.disableVertexAttribArray(bufferData.shader.textureCoordAttribute)

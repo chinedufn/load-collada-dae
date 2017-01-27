@@ -5,7 +5,7 @@ var path = require('path')
 var loadDae = require('../../')
 var parseDae = require('collada-dae-parser')
 
-var createContext = require('gl')
+var createWebGLContext = require('../test-utils/create-webgl-context.js')
 
 var ndarray = require('ndarray')
 var savePixels = require('save-pixels')
@@ -26,11 +26,7 @@ test('Animated rectangular prism', function (t) {
   var canvasHeight = 256
 
   // 256 * 256 canvas with a black background
-  var gl = createContext(canvasWidth, canvasHeight)
-  gl.clearColor(0, 0, 0, 1)
-  gl.enable(gl.DEPTH_TEST)
-  gl.viewport(0, 0, canvasWidth, canvasHeight)
-  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+  var gl = createWebGLContext()
 
   // Log WebGL errors
   gl = require('webgl-debug').makeDebugContext(gl, function (err, func, args) {

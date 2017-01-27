@@ -9,7 +9,6 @@ function generateFragmentShader (opts) {
   if (opts.texture) {
     textureVars = `
       varying vec2 vTextureCoord;
-      varying vec3 vLightWeighting;
 
       uniform sampler2D uSampler;
     `
@@ -34,6 +33,8 @@ function generateFragmentShader (opts) {
     ${precision}
 
     ${textureVars}
+
+    varying vec3 vLightWeighting;
 
     void main (void) {
       ${assignFragColor}

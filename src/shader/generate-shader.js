@@ -25,13 +25,18 @@ function generateShader (gl, opts) {
 
   // Return our shader object data
   var shaderObj = {
+    ambientColorUniform: gl.getUniformLocation(shaderProgram, 'uAmbientColor'),
+    directionalColorUniform: gl.getUniformLocation(shaderProgram, 'uDirectionalColor'),
+    lightingDirectionUniform: gl.getUniformLocation(shaderProgram, 'uLightingDirection'),
     mvMatrixUniform: gl.getUniformLocation(shaderProgram, 'uMVMatrix'),
     nMatrixUniform: gl.getUniformLocation(shaderProgram, 'uNMatrix'),
     pMatrixUniform: gl.getUniformLocation(shaderProgram, 'uPMatrix'),
     program: shaderProgram,
+    useLightingUniform: gl.getUniformLocation(shaderProgram, 'uUseLighting'),
     vertexPositionAttribute: gl.getAttribLocation(shaderProgram, 'aVertexPosition'),
     vertexJointIndexAttribute: gl.getAttribLocation(shaderProgram, 'aJointIndex'),
-    vertexJointWeightAttribute: gl.getAttribLocation(shaderProgram, 'aJointWeight')
+    vertexJointWeightAttribute: gl.getAttribLocation(shaderProgram, 'aJointWeight'),
+    vertexNormalAttribute: gl.getAttribLocation(shaderProgram, 'aVertexNormal')
   }
 
   if (opts.texture) {

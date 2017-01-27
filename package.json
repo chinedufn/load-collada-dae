@@ -30,6 +30,7 @@
   "homepage": "https://github.com/chinedufn/load-collada-dae#readme",
   "devDependencies": {
     "collada-dae-parser": "^0.9.0",
+    "get-attributes-uniforms": "^1.0.0",
     "gl": "^4.0.2",
     "gl-mat3": "^1.0.0",
     "gl-mat4": "^1.1.4",
@@ -40,5 +41,8 @@
     "standard": "^8.4.0",
     "tape": "^4.6.2",
     "webgl-debug": "^1.0.2"
+  },
+  "dependencies": {
+    "gl-vec3": "^1.0.3"
   }
 }
