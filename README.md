@@ -177,6 +177,7 @@ lorem ipsum
 ## TODO:
 
 - [ ] Demo in raw WebGL using an orbiting light source and materials
+- [ ] Add unit test with default lighting turned on
 
 ## To Test:
 

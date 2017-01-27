@@ -51,41 +51,41 @@ function drawModel (gl, bufferData, drawOpts) {
   gl.bindBuffer(gl.ARRAY_BUFFER, bufferData.vertexPositionBuffer)
   // TODO: See if we can move all of these enable calls to the top, or if order matters
   //  easier to refactor the enabling process later if they're all together
-  gl.enableVertexAttribArray(bufferData.shader.vertexPositionAttribute)
-  gl.vertexAttribPointer(bufferData.shader.vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0)
+  gl.enableVertexAttribArray(bufferData.shader.aVertexPosition)
+  gl.vertexAttribPointer(bufferData.shader.aVertexPosition, 3, gl.FLOAT, false, 0, 0)
 
   // TODO: Instead of having if statements we should generate our JavaScript
   //  Haven't done this before.. maybe we can use eval?
   if (bufferData.modelTexture) {
     // Texture
     gl.bindBuffer(gl.ARRAY_BUFFER, bufferData.vertexTextureBuffer)
-    gl.enableVertexAttribArray(bufferData.shader.textureCoordAttribute)
-    gl.vertexAttribPointer(bufferData.shader.textureCoordAttribute, 2, gl.FLOAT, false, 0, 0)
+    gl.enableVertexAttribArray(bufferData.shader.aTextureCoord)
+    gl.vertexAttribPointer(bufferData.shader.aTextureCoord, 2, gl.FLOAT, false, 0, 0)
 
     gl.activeTexture(gl.TEXTURE0)
     gl.bindTexture(gl.TEXTURE_2D, bufferData.modelTexture)
-    gl.uniform1i(bufferData.shader.samplerUniform, 0)
+    gl.uniform1i(bufferData.shader.uSampler, 0)
   }
 
   // Vertex normals
   gl.bindBuffer(gl.ARRAY_BUFFER, bufferData.vertexNormalBuffer)
-  gl.enableVertexAttribArray(bufferData.shader.vertexNormalAttribute)
-  gl.vertexAttribPointer(bufferData.shader.vertexNormalAttribute, 3, gl.FLOAT, false, 0, 0)
+  gl.enableVertexAttribArray(bufferData.shader.aVertexNormal)
+  gl.vertexAttribPointer(bufferData.shader.aVertexNormal, 3, gl.FLOAT, false, 0, 0)
 
   // Vertex joints
   gl.bindBuffer(gl.ARRAY_BUFFER, bufferData.vertexJointIndexBuffer)
-  gl.enableVertexAttribArray(bufferData.shader.vertexJointIndexAttribute)
-  gl.vertexAttribPointer(bufferData.shader.vertexJointIndexAttribute, 4, gl.FLOAT, false, 0, 0)
+  gl.enableVertexAttribArray(bufferData.shader.aJointIndex)
+  gl.vertexAttribPointer(bufferData.shader.aJointIndex, 4, gl.FLOAT, false, 0, 0)
 
   // Vertex joint weights
   gl.bindBuffer(gl.ARRAY_BUFFER, bufferData.weightBuffer)
-  gl.enableVertexAttribArray(bufferData.shader.vertexJointWeightAttribute)
-  gl.vertexAttribPointer(bufferData.shader.vertexJointWeightAttribute, 4, gl.FLOAT, false, 0, 0)
+  gl.enableVertexAttribArray(bufferData.shader.aJointWeight)
+  gl.vertexAttribPointer(bufferData.shader.aJointWeight, 4, gl.FLOAT, false, 0, 0)
 
   // Joint uniforms
   for (var jointNum = 0; jointNum < bufferData.numJoints; jointNum++) {
-    gl.uniform4fv(bufferData.shader['boneRotQuaternion' + jointNum], drawOpts.rotQuaternions[jointNum])
-    gl.uniform4fv(bufferData.shader['boneTransQuaternion' + jointNum], drawOpts.transQuaternions[jointNum])
+    gl.uniform4fv(bufferData.shader['boneRotQuaternions' + jointNum], drawOpts.rotQuaternions[jointNum])
+    gl.uniform4fv(bufferData.shader['boneTransQuaternions' + jointNum], drawOpts.transQuaternions[jointNum])
   }
 
   // Lighting
@@ -94,14 +94,14 @@ function drawModel (gl, bufferData, drawOpts) {
   vec3Normalize(normalizedLD, lightingDirection)
   vec3Scale(normalizedLD, normalizedLD, -1)
 
-  gl.uniform3fv(bufferData.shader.ambientColorUniform, [0.5, 0.5, 0.5])
-  gl.uniform3fv(bufferData.shader.lightingDirectionUniform, normalizedLD)
-  gl.uniform3f(bufferData.shader.directionalColorUniform, 1.0, 1.0, 1.0)
-  gl.uniform1i(bufferData.shader.useLightingUniform, drawOpts.lighting.useLighting)
+  gl.uniform3fv(bufferData.shader.uAmbientColor, [0.5, 0.5, 0.5])
+  gl.uniform3fv(bufferData.shader.uLightingDirection, normalizedLD)
+  gl.uniform3f(bufferData.shader.uDirectionalColor, 1.0, 1.0, 1.0)
+  gl.uniform1i(bufferData.shader.uUseLighting, drawOpts.lighting.useLighting)
 
   // Model-view and perspective matrices
-  gl.uniformMatrix4fv(bufferData.shader.pMatrixUniform, false, drawOpts.perspective)
-  gl.uniformMatrix4fv(bufferData.shader.mvMatrixUniform, false, modelMatrix)
+  gl.uniformMatrix4fv(bufferData.shader.uPMatrix, false, drawOpts.perspective)
+  gl.uniformMatrix4fv(bufferData.shader.uMVMatrix, false, modelMatrix)
 
   // Draw our model
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, bufferData.vertexPositionIndexBuffer)
@@ -109,9 +109,9 @@ function drawModel (gl, bufferData, drawOpts) {
 
   // Clean up
   // TODO: Only disable when we're done re-drawing a model multiple times
-  gl.disableVertexAttribArray(bufferData.shader.vertexPositionAttribute)
-  gl.disableVertexAttribArray(bufferData.shader.vertexNormalAttribute)
-  gl.disableVertexAttribArray(bufferData.shader.vertexJointIndexAttribute)
-  gl.disableVertexAttribArray(bufferData.shader.vertexJointWeightAttribute)
-  gl.disableVertexAttribArray(bufferData.shader.textureCoordAttribute)
+  gl.disableVertexAttribArray(bufferData.shader.aVertexPosition)
+  gl.disableVertexAttribArray(bufferData.shader.aVertexNormal)
+  gl.disableVertexAttribArray(bufferData.shader.aJointIndex)
+  gl.disableVertexAttribArray(bufferData.shader.aJointWeight)
+  gl.disableVertexAttribArray(bufferData.shader.aTextureCoord)
 }

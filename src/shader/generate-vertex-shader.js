@@ -24,7 +24,6 @@ function generateVertexShader (opts) {
     attribute vec3 aVertexPosition;
     attribute vec3 aVertexNormal;
 
-    // Lighting
     uniform bool uUseLighting;
     uniform vec3 uAmbientColor;
     uniform vec3 uLightingDirection;
@@ -32,8 +31,6 @@ function generateVertexShader (opts) {
     varying vec3 vLightWeighting;
 
     ${textureVars}
-
-    uniform mat3 uNMatrix;
 
     attribute vec4 aJointIndex;
     attribute vec4 aJointWeight;

@@ -24,7 +24,7 @@ function createWebGLContext () {
 
   function logEveryCall (functionName, args) {
     // Uncomment this to debug errors
-    console.log('gl.' + functionName + '(' + webglDebug.glFunctionArgsToString(functionName, args) + ')')
+    // console.log('gl.' + functionName + '(' + webglDebug.glFunctionArgsToString(functionName, args) + ')')
   }
 
   return gl

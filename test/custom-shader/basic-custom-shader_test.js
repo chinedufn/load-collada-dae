@@ -17,7 +17,7 @@ var keyframesToDualQuats = require('../test-utils/keyframes-to-dual-quats.js')
 // other than verifying that we're able to use our own custom attributes
 // This lets re-use our model from another test and it's expected result since,
 // in this case, our test custom shader happens to produce the same output as the default.
-test('Animated recntagular prism with custom shader', function (t) {
+test('Animated rectangular prism with custom shader', function (t) {
   var gl = createWebGLContext()
 
   var modelJSON = parseDae(fs.readFileSync(path.resolve(__dirname, '../animated-bending-rectangular-prism/animated-bending-rectangular-prism_fixture.dae')))

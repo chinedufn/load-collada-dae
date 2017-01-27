@@ -11,6 +11,14 @@ function loadColladaDae (gl, modelJSON, loadOpts) {
 
   var vertexData = expandVertices(modelJSON, expandOpts)
 
+  // Create our shader program
+  var shader = generateShader(gl, {
+    fragmentShaderFunc: loadOpts.fragmentShaderFunc,
+    vertexShaderFunc: loadOpts.vertexShaderFunc,
+    numJoints: vertexData.numJoints,
+    texture: !!loadOpts.texture
+  })
+
   var vertexPositionBuffer = createBuffer(gl, 'ARRAY_BUFFER', Float32Array, modelJSON.vertexPositions)
   var vertexPositionIndexBuffer = createBuffer(gl, 'ELEMENT_ARRAY_BUFFER', Uint16Array, vertexData.vertexPositionIndices)
   var vertexNormalBuffer = createBuffer(gl, 'ARRAY_BUFFER', Float32Array, vertexData.vertexNormals)
@@ -23,13 +31,6 @@ function loadColladaDae (gl, modelJSON, loadOpts) {
     vertexTextureBuffer = createBuffer(gl, 'ARRAY_BUFFER', Float32Array, vertexData.vertexUVs)
     modelTexture = initTexture(gl, loadOpts)
   }
-
-  var shader = generateShader(gl, {
-    fragmentShaderFunc: loadOpts.fragmentShaderFunc,
-    vertexShaderFunc: loadOpts.vertexShaderFunc,
-    numJoints: vertexData.numJoints,
-    texture: !!loadOpts.texture
-  })
 
   return {
     draw: drawModel.bind(null, gl, {

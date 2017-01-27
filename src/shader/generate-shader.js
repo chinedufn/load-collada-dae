@@ -1,5 +1,6 @@
 var generateFragmentShader = require('./generate-fragment-shader.js')
 var generateVertexShader = require('./generate-vertex-shader.js')
+var getAttributesUniforms = require('get-attributes-uniforms')
 
 module.exports = generateShader
 
@@ -23,33 +24,47 @@ function generateShader (gl, opts) {
   gl.attachShader(shaderProgram, vertexShader)
   gl.linkProgram(shaderProgram)
 
-  // Return our shader object data
+  var vertexShaderAttributesUniforms = getAttributesUniforms(vertexShaderString)
+  var fragmentShaderAttributesUniforms = getAttributesUniforms(fragmentShaderString)
+
   var shaderObj = {
-    ambientColorUniform: gl.getUniformLocation(shaderProgram, 'uAmbientColor'),
-    directionalColorUniform: gl.getUniformLocation(shaderProgram, 'uDirectionalColor'),
-    lightingDirectionUniform: gl.getUniformLocation(shaderProgram, 'uLightingDirection'),
-    mvMatrixUniform: gl.getUniformLocation(shaderProgram, 'uMVMatrix'),
-    nMatrixUniform: gl.getUniformLocation(shaderProgram, 'uNMatrix'),
-    pMatrixUniform: gl.getUniformLocation(shaderProgram, 'uPMatrix'),
-    program: shaderProgram,
-    useLightingUniform: gl.getUniformLocation(shaderProgram, 'uUseLighting'),
-    vertexPositionAttribute: gl.getAttribLocation(shaderProgram, 'aVertexPosition'),
-    vertexJointIndexAttribute: gl.getAttribLocation(shaderProgram, 'aJointIndex'),
-    vertexJointWeightAttribute: gl.getAttribLocation(shaderProgram, 'aJointWeight'),
-    vertexNormalAttribute: gl.getAttribLocation(shaderProgram, 'aVertexNormal')
+    program: shaderProgram
   }
 
-  if (opts.texture) {
-    shaderObj.samplerUniform = gl.getUniformLocation(shaderProgram, 'uSampler')
-    shaderObj.textureCoordAttribute = gl.getAttribLocation(shaderProgram, 'aTextureCoord')
-  }
+  // Loop through all of the uniforms and get their locations
+  vertexShaderAttributesUniforms.uniforms.forEach(getUniformLocations)
+  fragmentShaderAttributesUniforms.uniforms.forEach(getUniformLocations)
 
-  // TODO: Don't hard code # of joints
-  for (var jointNum = 0; jointNum < opts.numJoints; jointNum++) {
-    // Split our dual quaternion into two vec4's since we can't use mat2x4 in WebGL
-    shaderObj['boneRotQuaternion' + jointNum] = gl.getUniformLocation(shaderProgram, 'boneRotQuaternions[' + jointNum + ']')
-    shaderObj['boneTransQuaternion' + jointNum] = gl.getUniformLocation(shaderProgram, 'boneTransQuaternions[' + jointNum + ']')
-  }
+  // Loop through all of our attributes and get their locations
+  vertexShaderAttributesUniforms.attributes.forEach(getAttributeLocations)
+  fragmentShaderAttributesUniforms.attributes.forEach(getAttributeLocations)
 
   return shaderObj
+
+  // TODO: Pull this out into own repo?
+  function getUniformLocations (uniformName) {
+    // If the uniform is not an array we get it's location
+    var openBracketIndex = uniformName.indexOf('[')
+    if (openBracketIndex === -1) {
+      shaderObj[uniformName] = gl.getUniformLocation(shaderProgram, uniformName)
+    } else {
+      // If the uniform if an array we get the location of each element in the array
+      var closedBracketIndex = uniformName.indexOf(']')
+      // We're converting someUniformArray[n] -> n
+      var uniformArraySize = Number(uniformName.substring(openBracketIndex + 1, closedBracketIndex))
+      // We're converting someUniformArray[n] -> someUniformArray
+      var uniformArrayName = uniformName.substring(0, openBracketIndex)
+
+      // Get the uniform location of each element in the array
+      //  Naming convention -> someUniform1, someUniform2, ... someAtribute25
+      for (var arrayElement = 0; arrayElement < uniformArraySize; arrayElement++) {
+        // ex: shaderObj[someUniform2] = gl.getUniformLocation(shaderProgram, someUniform[2])
+        shaderObj[uniformArrayName + arrayElement] = gl.getUniformLocation(shaderProgram, uniformArrayName + '[' + arrayElement + ']')
+      }
+    }
+  }
+
+  function getAttributeLocations (attributeName) {
+    shaderObj[attributeName] = gl.getAttribLocation(shaderProgram, attributeName)
+  }
 }
