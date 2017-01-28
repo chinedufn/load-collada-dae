@@ -20,10 +20,11 @@ function loadColladaDae (gl, modelJSON, loadOpts) {
   })
 
   var vertexPositionBuffer = createBuffer(gl, 'ARRAY_BUFFER', Float32Array, modelJSON.vertexPositions)
-  var vertexPositionIndexBuffer = createBuffer(gl, 'ELEMENT_ARRAY_BUFFER', Uint16Array, vertexData.vertexPositionIndices)
   var vertexNormalBuffer = createBuffer(gl, 'ARRAY_BUFFER', Float32Array, vertexData.vertexNormals)
   var vertexJointIndexBuffer = createBuffer(gl, 'ARRAY_BUFFER', Float32Array, vertexData.vertexJointAffectors)
   var weightBuffer = createBuffer(gl, 'ARRAY_BUFFER', Float32Array, vertexData.vertexJointWeights)
+  var vertexPositionIndexBuffer = createBuffer(gl, 'ELEMENT_ARRAY_BUFFER', Uint16Array, vertexData.vertexPositionIndices)
+
   // If the user's model has a texture we create our texture buffer
   var modelTexture
   var vertexTextureBuffer
@@ -32,21 +33,24 @@ function loadColladaDae (gl, modelJSON, loadOpts) {
     modelTexture = initTexture(gl, loadOpts)
   }
 
+  // Data that we pass into our draw call that does not change
+  var bufferData = {
+    vertexNormalBuffer: vertexNormalBuffer,
+    vertexPositionBuffer: vertexPositionBuffer,
+    vertexPositionIndexBuffer: vertexPositionIndexBuffer,
+    vertexJointIndexBuffer: vertexJointIndexBuffer,
+    vertexTextureBuffer: vertexTextureBuffer,
+    weightBuffer: weightBuffer,
+    shader: shader,
+    // The texture for our model
+    modelTexture: modelTexture,
+    // Useful for knowing how many triangles to draw
+    numIndices: modelJSON.vertexPositionIndices.length,
+    numJoints: vertexData.numJoints
+  }
+
   return {
-    draw: drawModel.bind(null, gl, {
-      vertexNormalBuffer: vertexNormalBuffer,
-      vertexPositionBuffer: vertexPositionBuffer,
-      vertexPositionIndexBuffer: vertexPositionIndexBuffer,
-      vertexJointIndexBuffer: vertexJointIndexBuffer,
-      vertexTextureBuffer: vertexTextureBuffer,
-      weightBuffer: weightBuffer,
-      shader: shader,
-      // The texture for our model
-      modelTexture: modelTexture,
-      // Useful for knowing how many triangles to draw
-      numIndices: modelJSON.vertexPositionIndices.length,
-      numJoints: vertexData.numJoints
-    }),
+    draw: drawModel.bind(null, gl, bufferData),
     // Useful for letting our consumer call gl.useProgram()
     //  If they're drawing this model many times, they'll want to call `useProgram` themselves, only once, right before drawing
     shaderProgram: shader.program

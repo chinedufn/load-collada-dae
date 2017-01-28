@@ -28,7 +28,9 @@ function generateShader (gl, opts) {
   var fragmentShaderAttributesUniforms = getAttributesUniforms(fragmentShaderString)
 
   var shaderObj = {
-    program: shaderProgram
+    attributes: {},
+    program: shaderProgram,
+    uniforms: {}
   }
 
   // Loop through all of the uniforms and get their locations
@@ -41,12 +43,11 @@ function generateShader (gl, opts) {
 
   return shaderObj
 
-  // TODO: Pull this out into own repo?
   function getUniformLocations (uniformName) {
     // If the uniform is not an array we get it's location
     var openBracketIndex = uniformName.indexOf('[')
     if (openBracketIndex === -1) {
-      shaderObj[uniformName] = gl.getUniformLocation(shaderProgram, uniformName)
+      shaderObj.uniforms[uniformName] = gl.getUniformLocation(shaderProgram, uniformName)
     } else {
       // If the uniform if an array we get the location of each element in the array
       var closedBracketIndex = uniformName.indexOf(']')
@@ -59,12 +60,12 @@ function generateShader (gl, opts) {
       //  Naming convention -> someUniform1, someUniform2, ... someAtribute25
       for (var arrayElement = 0; arrayElement < uniformArraySize; arrayElement++) {
         // ex: shaderObj[someUniform2] = gl.getUniformLocation(shaderProgram, someUniform[2])
-        shaderObj[uniformArrayName + arrayElement] = gl.getUniformLocation(shaderProgram, uniformArrayName + '[' + arrayElement + ']')
+        shaderObj.uniforms[uniformArrayName + arrayElement] = gl.getUniformLocation(shaderProgram, uniformArrayName + '[' + arrayElement + ']')
       }
     }
   }
 
   function getAttributeLocations (attributeName) {
-    shaderObj[attributeName] = gl.getAttribLocation(shaderProgram, attributeName)
+    shaderObj.attributes[attributeName] = gl.getAttribLocation(shaderProgram, attributeName)
   }
 }
