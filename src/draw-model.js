@@ -48,7 +48,7 @@ function drawModel (gl, bufferData, drawOpts) {
   gl.useProgram(bufferData.shader.program)
 
   // TODO: Don't need to enable vertex attribs if we are re-drawing the same model
-  gl.bindBuffer(gl.ARRAY_BUFFER, bufferData.vertexPositionBuffer)
+  gl.bindBuffer(gl.ARRAY_BUFFER, bufferData.aVertexPosition)
   // TODO: See if we can move all of these enable calls to the top, or if order matters
   //  easier to refactor the enabling process later if they're all together
   gl.enableVertexAttribArray(bufferData.shader.attributes.aVertexPosition.location)
@@ -69,18 +69,18 @@ function drawModel (gl, bufferData, drawOpts) {
 
   // Vertex normals
   if (bufferData.shader.attributes.aVertexNormal) {
-    gl.bindBuffer(gl.ARRAY_BUFFER, bufferData.vertexNormalBuffer)
+    gl.bindBuffer(gl.ARRAY_BUFFER, bufferData.aVertexNormal)
     gl.enableVertexAttribArray(bufferData.shader.attributes.aVertexNormal.location)
     gl.vertexAttribPointer(bufferData.shader.attributes.aVertexNormal.location, 3, gl.FLOAT, false, 0, 0)
   }
 
   // Vertex joints
-  gl.bindBuffer(gl.ARRAY_BUFFER, bufferData.vertexJointIndexBuffer)
+  gl.bindBuffer(gl.ARRAY_BUFFER, bufferData.aJointIndex)
   gl.enableVertexAttribArray(bufferData.shader.attributes.aJointIndex.location)
   gl.vertexAttribPointer(bufferData.shader.attributes.aJointIndex.location, 4, gl.FLOAT, false, 0, 0)
 
   // Vertex joint weights
-  gl.bindBuffer(gl.ARRAY_BUFFER, bufferData.weightBuffer)
+  gl.bindBuffer(gl.ARRAY_BUFFER, bufferData.aJointWeight)
   gl.enableVertexAttribArray(bufferData.shader.attributes.aJointWeight.location)
   gl.vertexAttribPointer(bufferData.shader.attributes.aJointWeight.location, 4, gl.FLOAT, false, 0, 0)
 

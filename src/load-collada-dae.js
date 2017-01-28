@@ -19,10 +19,10 @@ function loadColladaDae (gl, modelJSON, loadOpts) {
     texture: !!loadOpts.texture
   })
 
-  var vertexPositionBuffer = createBuffer(gl, 'ARRAY_BUFFER', Float32Array, modelJSON.vertexPositions)
-  var vertexNormalBuffer = createBuffer(gl, 'ARRAY_BUFFER', Float32Array, vertexData.vertexNormals)
-  var vertexJointIndexBuffer = createBuffer(gl, 'ARRAY_BUFFER', Float32Array, vertexData.vertexJointAffectors)
-  var weightBuffer = createBuffer(gl, 'ARRAY_BUFFER', Float32Array, vertexData.vertexJointWeights)
+  var aVertexPosition = createBuffer(gl, 'ARRAY_BUFFER', Float32Array, modelJSON.vertexPositions)
+  var aVertexNormal = createBuffer(gl, 'ARRAY_BUFFER', Float32Array, vertexData.vertexNormals)
+  var aJointIndex = createBuffer(gl, 'ARRAY_BUFFER', Float32Array, vertexData.vertexJointAffectors)
+  var aJointWeight = createBuffer(gl, 'ARRAY_BUFFER', Float32Array, vertexData.vertexJointWeights)
   var vertexPositionIndexBuffer = createBuffer(gl, 'ELEMENT_ARRAY_BUFFER', Uint16Array, vertexData.vertexPositionIndices)
 
   // If the user's model has a texture we create our texture buffer
@@ -35,12 +35,12 @@ function loadColladaDae (gl, modelJSON, loadOpts) {
 
   // Data that we pass into our draw call that does not change
   var bufferData = {
-    vertexNormalBuffer: vertexNormalBuffer,
-    vertexPositionBuffer: vertexPositionBuffer,
+    aVertexNormal: aVertexNormal,
+    aVertexPosition: aVertexPosition,
     vertexPositionIndexBuffer: vertexPositionIndexBuffer,
-    vertexJointIndexBuffer: vertexJointIndexBuffer,
+    aJointIndex: aJointIndex,
     vertexTextureBuffer: vertexTextureBuffer,
-    weightBuffer: weightBuffer,
+    aJointWeight: aJointWeight,
     shader: shader,
     // The texture for our model
     modelTexture: modelTexture,
