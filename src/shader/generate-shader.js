@@ -1,5 +1,7 @@
 var generateFragmentShader = require('./generate-fragment-shader.js')
 var generateVertexShader = require('./generate-vertex-shader.js')
+// TODO: Don't actually need this. We can get the information that we need
+// directly from the shader program
 var getAttributesUniforms = require('get-attributes-uniforms')
 
 module.exports = generateShader
@@ -23,6 +25,11 @@ function generateShader (gl, opts) {
   gl.attachShader(shaderProgram, fragmentShader)
   gl.attachShader(shaderProgram, vertexShader)
   gl.linkProgram(shaderProgram)
+
+  // If we were unable to link our shader program we throw an error
+  if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
+    throw new Error('Error linking shader.. TODO: better error message')
+  }
 
   var vertexShaderAttributesUniforms = getAttributesUniforms(vertexShaderString)
   var fragmentShaderAttributesUniforms = getAttributesUniforms(fragmentShaderString)
