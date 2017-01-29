@@ -3,6 +3,8 @@ var drawModel = require('./draw-model.js')
 var expandVertices = require('./expand-vertices.js')
 var initTexture = require('./init-texture.js')
 
+var createDrawFunction = require('./draw/create-draw-function.js')
+
 module.exports = loadColladaDae
 
 function loadColladaDae (gl, modelJSON, loadOpts) {
@@ -49,8 +51,11 @@ function loadColladaDae (gl, modelJSON, loadOpts) {
     numJoints: vertexData.numJoints
   }
 
+  var drawModel2 = createDrawFunction(gl, shader.program, shader.attributes, shader.uniforms, vertexPositionIndexBuffer, modelJSON.vertexPositionIndices.length)
+
   return {
-    draw: drawModel.bind(null, gl, bufferData),
+    draw: drawModel2 || drawModel.bind(null, gl, bufferData),
+    bufferData: bufferData,
     // Useful for letting our consumer call gl.useProgram()
     //  If they're drawing this model many times, they'll want to call `useProgram` themselves, only once, right before drawing
     shaderProgram: shader.program

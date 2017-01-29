@@ -51,12 +51,13 @@ function generateShader (gl, opts) {
 
   return shaderObj
 
-  function getUniformLocations (uniformName, uniformTypw) {
+  function getUniformLocations (uniformName, uniformType) {
     // If the uniform is not an array we get it's location
     var openBracketIndex = uniformName.indexOf('[')
     if (openBracketIndex === -1) {
       shaderObj.uniforms[uniformName] = {
-        location: gl.getUniformLocation(shaderProgram, uniformName)
+        location: gl.getUniformLocation(shaderProgram, uniformName),
+        type: uniformType
       }
     } else {
       // If the uniform if an array we get the location of each element in the array
@@ -71,7 +72,8 @@ function generateShader (gl, opts) {
       for (var arrayElement = 0; arrayElement < uniformArraySize; arrayElement++) {
         // ex: shaderObj[someUniform2] = gl.getUniformLocation(shaderProgram, someUniform[2])
         shaderObj.uniforms[uniformArrayName + arrayElement] = {
-          location: gl.getUniformLocation(shaderProgram, uniformArrayName + '[' + arrayElement + ']')
+          location: gl.getUniformLocation(shaderProgram, uniformArrayName + '[' + arrayElement + ']'),
+          type: uniformType
         }
       }
     }
@@ -79,7 +81,8 @@ function generateShader (gl, opts) {
 
   function getAttributeLocations (attributeName, attributeType) {
     shaderObj.attributes[attributeName] = {
-      location: gl.getAttribLocation(shaderProgram, attributeName)
+      location: gl.getAttribLocation(shaderProgram, attributeName),
+      type: attributeType
     }
   }
 }
