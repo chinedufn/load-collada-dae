@@ -1,6 +1,6 @@
 {
   "name": "load-collada-dae",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "description": "Load the WebGL graphics buffer data from a collada .dae model and return a draw command that accepts options",
   "main": "src/load-collada-dae.js",
   "scripts": {
