@@ -45,11 +45,12 @@ function createDrawFunction (gl, program, attributeData, uniformData, elementBuf
   var allAttributesString = Object.keys(attributeData).reduce(function bufferAttributeData (allAttributesString, attributeName) {
     // Attribute locations are integers so we can just pass it right in
     var attributeLocation = attributeData[attributeName].location
+    var attributeSize = typeInformation[attributeData[attributeName].type].attributeSize
 
     allAttributesString += `
       gl.bindBuffer(gl.ARRAY_BUFFER, drawOpts.attributes.${attributeName})
       gl.enableVertexAttribArray(${attributeLocation})
-      gl.vertexAttribPointer(${attributeLocation}, 3, gl.FLOAT, false, 0, 0)
+      gl.vertexAttribPointer(${attributeLocation}, ${attributeSize}, gl.FLOAT, false, 0, 0)
     `
 
     return allAttributesString

@@ -65,8 +65,7 @@ test('Animated rectangular prism', function (t) {
       boneRotQuaternions1: jointDualQuats.rotQuaternions[1],
       boneTransQuaternions0: jointDualQuats.transQuaternions[0],
       boneTransQuaternions1: jointDualQuats.transQuaternions[1]
-    },
-    position: [0.0, 0.0, -17.0]
+    }
   })
 
   var pixels = new Uint8Array(canvasWidth * canvasHeight * 4)
