@@ -12,6 +12,8 @@ var imageDiff = require('image-diff')
 var createWebGLContext = require('../test-utils/create-webgl-context.js')
 var keyframesToDualQuats = require('../test-utils/keyframes-to-dual-quats.js')
 
+var mat4Perspective = require('gl-mat4/perspective')
+
 // TODO: Not sure why the X and Y positions of the generated image are wrong
 //  When using a real canvas WebGL context in the browser we aren't having any issues
 test('Animated textured rectangular prism', function (t) {
@@ -42,10 +44,21 @@ test('Animated textured rectangular prism', function (t) {
   var jointMatrices = modelJSON.keyframes[0]
   var jointDualQuats = keyframesToDualQuats(jointMatrices)
 
+  gl.useProgram(model.shaderProgram)
+
   model.draw({
-    position: [0.0, 0.0, -17.0],
-    rotQuaternions: jointDualQuats.rotQuaternions,
-    transQuaternions: jointDualQuats.transQuaternions
+    attributes: model.attributes,
+    uniforms: {
+      uUseLighting: false,
+      uAmbientColor: [0, 0, 0],
+      uLightingDirection: [0, 0, 0],
+      uDirectionalColor: [0, 0, 0],
+      // Translation matrix with model positioned at [0, 0, -17]
+      uMVMatrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0.0, 0.0, -17.0, 1],
+      uPMatrix: mat4Perspective([], Math.PI / 4, 256 / 256, 0.1, 100),
+      boneRotQuaternions0: jointDualQuats.rotQuaternions[0],
+      boneTransQuaternions0: jointDualQuats.transQuaternions[0]
+    }
   })
 
   var pixels = new Uint8Array(canvasWidth * canvasHeight * 4)

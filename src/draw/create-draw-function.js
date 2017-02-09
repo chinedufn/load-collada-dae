@@ -39,7 +39,7 @@ module.exports = createDrawFunction
  * TODO: Cite `regl` as inspiration
  * TODO: Detailed commenting
  */
-function createDrawFunction (gl, program, attributeData, uniformData, elementBuffer, numIndices) {
+function createDrawFunction (gl, program, attributeData, uniformData, elementBuffer, numIndices, textures) {
   // Loop through each attribute and generate a string of JavaScript
   // that will buffer it's data
   var allAttributesString = Object.keys(attributeData).reduce(function bufferAttributeData (allAttributesString, attributeName) {
@@ -61,7 +61,19 @@ function createDrawFunction (gl, program, attributeData, uniformData, elementBuf
 
   // Loop through each uniform and generate a string of JavaScript
   // that will buffer it's data
-  var allUniformsString = Object.keys(uniformData).reduce(function bufferAttributeData (allUniformsString, uniformName) {
+  var allUniformsString = Object.keys(uniformData)
+  .sort(function (a, b) {
+    var aUniformType = uniformData[a].type
+    var bUniformType = uniformData[b].type
+    if (aUniformType === 'sampler2D') {
+      return -1
+    } else if (bUniformType === 'sampler2D') {
+      return 1
+    }
+
+    return 0
+  })
+  .reduce(function bufferAttributeData (allUniformsString, uniformName) {
     var uniformType = typeInformation[uniformData[uniformName].type].uniformType
     uniformLocations[uniformName] = uniformData[uniformName].location
 
@@ -72,9 +84,21 @@ function createDrawFunction (gl, program, attributeData, uniformData, elementBuf
       transposeParemeter = 'false,'
     }
 
-    allUniformsString += `
-      gl.${uniformType}(uniformLocations.${uniformName}, ${transposeParemeter} drawOpts.uniforms.${uniformName})
-    `
+    if (uniformData[uniformName].type === 'sampler2D') {
+      // Set the active texture and then pass the uniform data to the gpu
+      // TODO: We don't need to do this everything. So be smarter.. Maybe allow a param to be passed in
+      // TODO: Currently only supports one texture. Should we allow more than one? Do some research..
+      allUniformsString += `
+        gl.activeTexture(gl.TEXTURE0)
+        gl.bindTexture(gl.TEXTURE_2D, textures[0])
+        gl.uniform1i(uniformLocations.${uniformName}, 0)
+      `
+    } else {
+      // If we are not dealing with texture uniforms we don't need to set the active texture
+      allUniformsString += `
+        gl.${uniformType}(uniformLocations.${uniformName}, ${transposeParemeter} drawOpts.uniforms.${uniformName})
+      `
+    }
 
     return allUniformsString
   }, '')
@@ -93,9 +117,10 @@ function createDrawFunction (gl, program, attributeData, uniformData, elementBuf
     'uniformLocations',
     'elementBuffer',
     'numIndices',
+    'textures',
     'drawOpts',
     allAttributesString + allUniformsString + elementsStatement
   )
 
-  return drawFunction.bind(null, gl, uniformLocations, elementBuffer, numIndices)
+  return drawFunction.bind(null, gl, uniformLocations, elementBuffer, numIndices, textures)
 }

@@ -12,6 +12,8 @@ var imageDiff = require('image-diff')
 var createWebGLContext = require('../test-utils/create-webgl-context.js')
 var keyframesToDualQuats = require('../test-utils/keyframes-to-dual-quats.js')
 
+var mat4Perspective = require('gl-mat4/perspective')
+
 // We create a custom shader that's similar to the default shader
 // Only difference is that accepts an extra attribute that we don't use for anything
 // other than verifying that we're able to use our own custom attributes
@@ -29,10 +31,23 @@ test('Animated rectangular prism with custom shader', function (t) {
   // All the joint dual quaternions at animation time zero
   var jointDualQuats = keyframesToDualQuats(modelJSON.keyframes[0])
 
+  gl.useProgram(model.shaderProgram)
+
   model.draw({
-    position: [0.0, 0.0, -17.0],
-    rotQuaternions: jointDualQuats.rotQuaternions,
-    transQuaternions: jointDualQuats.transQuaternions
+    attributes: model.attributes,
+    uniforms: {
+      uUseLighting: false,
+      uAmbientColor: [0, 0, 0],
+      uLightingDirection: [0, 0, 0],
+      uDirectionalColor: [0, 0, 0],
+      // Translation matrix with model positioned at [0, 0, -17]
+      uMVMatrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0.0, 0.0, -17.0, 1],
+      uPMatrix: mat4Perspective([], Math.PI / 4, 256 / 256, 0.1, 100),
+      boneRotQuaternions0: jointDualQuats.rotQuaternions[0],
+      boneTransQuaternions0: jointDualQuats.transQuaternions[0],
+      boneRotQuaternions1: jointDualQuats.rotQuaternions[1],
+      boneTransQuaternions1: jointDualQuats.transQuaternions[1]
+    }
   })
 
   var pixels = new Uint8Array(256 * 256 * 4)
@@ -74,8 +89,6 @@ function createCustomFragShader (opts) {
 function createCustomVertShader (opts) {
   var vertexShader = `
     attribute vec3 aVertexPosition;
-
-    uniform mat3 uNMatrix;
 
     attribute vec4 aJointIndex;
     attribute vec4 aJointWeight;

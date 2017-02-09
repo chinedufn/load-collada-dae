@@ -27,35 +27,33 @@ function loadColladaDae (gl, modelJSON, loadOpts) {
   var aJointWeight = createBuffer(gl, 'ARRAY_BUFFER', Float32Array, vertexData.vertexJointWeights)
   var vertexPositionIndexBuffer = createBuffer(gl, 'ELEMENT_ARRAY_BUFFER', Uint16Array, vertexData.vertexPositionIndices)
 
-  // If the user's model has a texture we create our texture buffer
-  var modelTexture
-  var vertexTextureBuffer
-  if (loadOpts.texture) {
-    vertexTextureBuffer = createBuffer(gl, 'ARRAY_BUFFER', Float32Array, vertexData.vertexUVs)
-    modelTexture = initTexture(gl, loadOpts)
-  }
-
-  // Data that we pass into our draw call that does not change
+    // Data that we pass into our draw call that does not change
   var bufferData = {
-    aVertexNormal: aVertexNormal,
-    aVertexPosition: aVertexPosition,
-    vertexPositionIndexBuffer: vertexPositionIndexBuffer,
-    aJointIndex: aJointIndex,
-    vertexTextureBuffer: vertexTextureBuffer,
-    aJointWeight: aJointWeight,
     shader: shader,
-    // The texture for our model
-    modelTexture: modelTexture,
     // Useful for knowing how many triangles to draw
     numIndices: modelJSON.vertexPositionIndices.length,
     numJoints: vertexData.numJoints
   }
+  var attributes = {
+    aVertexNormal: aVertexNormal,
+    aVertexPosition: aVertexPosition,
+    aJointIndex: aJointIndex,
+    aJointWeight: aJointWeight
+  }
 
-  var drawModel2 = createDrawFunction(gl, shader.program, shader.attributes, shader.uniforms, vertexPositionIndexBuffer, modelJSON.vertexPositionIndices.length)
+  // If the user's model has a texture we create our texture buffer
+  var textures = []
+  if (loadOpts.texture) {
+    attributes.aTextureCoord = createBuffer(gl, 'ARRAY_BUFFER', Float32Array, vertexData.vertexUVs)
+    textures[0] = initTexture(gl, loadOpts)
+  }
+
+  var drawModel2 = createDrawFunction(gl, shader.program, shader.attributes, shader.uniforms, vertexPositionIndexBuffer, modelJSON.vertexPositionIndices.length, textures)
 
   return {
     draw: drawModel2 || drawModel.bind(null, gl, bufferData),
     bufferData: bufferData,
+    attributes: attributes,
     // Useful for letting our consumer call gl.useProgram()
     //  If they're drawing this model many times, they'll want to call `useProgram` themselves, only once, right before drawing
     shaderProgram: shader.program

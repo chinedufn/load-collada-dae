@@ -47,12 +47,7 @@ test('Animated rectangular prism', function (t) {
   gl.useProgram(model.shaderProgram)
 
   model.draw({
-    attributes: {
-      aVertexPosition: model.bufferData.aVertexPosition,
-      aVertexNormal: model.bufferData.aVertexNormal,
-      aJointIndex: model.bufferData.aJointIndex,
-      aJointWeight: model.bufferData.aJointWeight
-    },
+    attributes: model.attributes,
     uniforms: {
       uUseLighting: false,
       uAmbientColor: [0, 0, 0],
@@ -81,7 +76,7 @@ test('Animated rectangular prism', function (t) {
     expectedImage: path.resolve(__dirname, './expected-animated-bending-rectangular-prism_fixture.png')
   }, function (err, imagesAreSame) {
     t.notOk(err, 'No error while comparing images')
-    t.ok(imagesAreSame, 'Successfully rendered our default blender cube')
+    t.ok(imagesAreSame, 'Successfully rendered animated box')
 
     // Delete our actual newly generated test cube
     fs.unlinkSync(path.resolve(__dirname, './tmp-actual.png'))
