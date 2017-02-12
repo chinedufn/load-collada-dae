@@ -62,17 +62,6 @@ function createDrawFunction (gl, program, attributeData, uniformData, elementBuf
   // Loop through each uniform and generate a string of JavaScript
   // that will buffer it's data
   var allUniformsString = Object.keys(uniformData)
-  .sort(function (a, b) {
-    var aUniformType = uniformData[a].type
-    var bUniformType = uniformData[b].type
-    if (aUniformType === 'sampler2D') {
-      return -1
-    } else if (bUniformType === 'sampler2D') {
-      return 1
-    }
-
-    return 0
-  })
   .reduce(function bufferAttributeData (allUniformsString, uniformName) {
     var uniformType = typeInformation[uniformData[uniformName].type].uniformType
     uniformLocations[uniformName] = uniformData[uniformName].location
