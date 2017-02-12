@@ -1,5 +1,4 @@
 var generateShader = require('./shader/generate-shader.js')
-var drawModel = require('./draw-model.js')
 var expandVertices = require('./expand-vertices.js')
 var initTexture = require('./init-texture.js')
 
@@ -48,10 +47,14 @@ function loadColladaDae (gl, modelJSON, loadOpts) {
     textures[0] = initTexture(gl, loadOpts)
   }
 
-  var drawModel2 = createDrawFunction(gl, shader.program, shader.attributes, shader.uniforms, vertexPositionIndexBuffer, modelJSON.vertexPositionIndices.length, textures)
+  // Generate a JavaScript draw function from the passed in shaders and our collada model data.
+  // TODO: We shouldn't be enabling and disabling the vertex attributes every time. What if the consumer wants to draw the same model many times in a row?
+  //        we should instead make it the consumers responsibility to enable / disable. We can give them a generated `enable()` and `disable()` function to do so
+  // TODO: Turn this into a separate, tested module that anyone can use
+  var generatedDrawFunction = createDrawFunction(gl, shader.program, shader.attributes, shader.uniforms, vertexPositionIndexBuffer, modelJSON.vertexPositionIndices.length, textures)
 
   return {
-    draw: drawModel2 || drawModel.bind(null, gl, bufferData),
+    draw: generatedDrawFunction,
     bufferData: bufferData,
     attributes: attributes,
     // Useful for letting our consumer call gl.useProgram()
