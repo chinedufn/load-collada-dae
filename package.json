@@ -41,8 +41,9 @@
     "webgl-debug": "^1.0.2"
   },
   "dependencies": {
+    "expand-vertex-data": "^1.0.1",
     "get-attributes-uniforms": "^1.1.1",
-    "gl-vec3": "^1.0.3",
-    "gl-mat4": "^1.1.4"
+    "gl-mat4": "^1.1.4",
+    "gl-vec3": "^1.0.3"
   }
 }

@@ -1,5 +1,5 @@
 var generateShader = require('./shader/generate-shader.js')
-var expandVertices = require('./expand-vertices.js')
+var expandVertices = require('expand-vertex-data')
 var initTexture = require('./init-texture.js')
 
 var createDrawFunction = require('./draw/create-draw-function.js')
@@ -10,28 +10,30 @@ function loadColladaDae (gl, modelJSON, loadOpts) {
   var expandOpts = {}
   expandOpts.hasTexture = !!loadOpts.texture
 
-  var vertexData = expandVertices(modelJSON, expandOpts)
+  var vertexData = expandVertices(modelJSON)
+  // Number of joints present in the first keyframe. Every keyframe should have the same number of joitns
+  var numJoints = modelJSON.keyframes[Object.keys(modelJSON.keyframes)[0]].length
 
   // Create our shader program
   var shader = generateShader(gl, {
     fragmentShaderFunc: loadOpts.fragmentShaderFunc,
     vertexShaderFunc: loadOpts.vertexShaderFunc,
-    numJoints: vertexData.numJoints,
+    numJoints: numJoints,
     texture: !!loadOpts.texture
   })
 
-  var aVertexPosition = createBuffer(gl, 'ARRAY_BUFFER', Float32Array, modelJSON.vertexPositions)
-  var aVertexNormal = createBuffer(gl, 'ARRAY_BUFFER', Float32Array, vertexData.vertexNormals)
-  var aJointIndex = createBuffer(gl, 'ARRAY_BUFFER', Float32Array, vertexData.vertexJointAffectors)
-  var aJointWeight = createBuffer(gl, 'ARRAY_BUFFER', Float32Array, vertexData.vertexJointWeights)
-  var vertexPositionIndexBuffer = createBuffer(gl, 'ELEMENT_ARRAY_BUFFER', Uint16Array, vertexData.vertexPositionIndices)
+  var aVertexPosition = createBuffer(gl, 'ARRAY_BUFFER', Float32Array, vertexData.positions)
+  var aVertexNormal = createBuffer(gl, 'ARRAY_BUFFER', Float32Array, vertexData.normals)
+  var aJointIndex = createBuffer(gl, 'ARRAY_BUFFER', Float32Array, vertexData.jointInfluences)
+  var aJointWeight = createBuffer(gl, 'ARRAY_BUFFER', Float32Array, vertexData.jointWeights)
+  var vertexPositionIndexBuffer = createBuffer(gl, 'ELEMENT_ARRAY_BUFFER', Uint16Array, vertexData.positionIndices)
 
     // Data that we pass into our draw call that does not change
   var bufferData = {
     shader: shader,
     // Useful for knowing how many triangles to draw
-    numIndices: modelJSON.vertexPositionIndices.length,
-    numJoints: vertexData.numJoints
+    numIndices: vertexData.positionIndices.length,
+    numJoints: numJoints
   }
   var attributes = {
     aVertexNormal: aVertexNormal,
@@ -43,7 +45,7 @@ function loadColladaDae (gl, modelJSON, loadOpts) {
   // If the user's model has a texture we create our texture buffer
   var textures = []
   if (loadOpts.texture) {
-    attributes.aTextureCoord = createBuffer(gl, 'ARRAY_BUFFER', Float32Array, vertexData.vertexUVs)
+    attributes.aTextureCoord = createBuffer(gl, 'ARRAY_BUFFER', Float32Array, vertexData.uvs)
     textures[0] = initTexture(gl, loadOpts)
   }
 
@@ -51,7 +53,7 @@ function loadColladaDae (gl, modelJSON, loadOpts) {
   // TODO: We shouldn't be enabling and disabling the vertex attributes every time. What if the consumer wants to draw the same model many times in a row?
   //        we should instead make it the consumers responsibility to enable / disable. We can give them a generated `enable()` and `disable()` function to do so
   // TODO: Turn this into a separate, tested module that anyone can use
-  var generatedDrawFunction = createDrawFunction(gl, shader.program, shader.attributes, shader.uniforms, vertexPositionIndexBuffer, modelJSON.vertexPositionIndices.length, textures)
+  var generatedDrawFunction = createDrawFunction(gl, shader.program, shader.attributes, shader.uniforms, vertexPositionIndexBuffer, vertexData.positionIndices.length, textures)
 
   return {
     draw: generatedDrawFunction,
