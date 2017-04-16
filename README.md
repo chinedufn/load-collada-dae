@@ -33,7 +33,7 @@ var gl = GetCanvasWebGLContextSomehow()
 // This can be a DOM image element or a Uint8Array of pixel data
 var image = document.getElementById('some-already-loaded-image')
 
-var model = loadDae(gl, modelJSON, {texureImage: image})
+var model = loadDae(gl, modelJSON, {texure: image})
 
 // Later inside of your render function
 model.draw({
