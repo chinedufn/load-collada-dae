@@ -37,10 +37,20 @@ var model = loadDae(gl, modelJSON, {texure: image})
 
 // Later inside of your render function
 model.draw({
-  position: [0, -1, -5],
-  interpolatedDualQuaternions: [[], [], []],
-  viewMatrix: [],
-  perspectiveMatrix: []
+  attributes: model.attributes,
+  uniforms: {
+    uUseLighting: true,
+    uAmbientColor: [0, 0, 0],
+    uLightingDirection: [0, 0, 0],
+    uDirectionalColor: [0, 0, 0],
+    uMVMatrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0.0, 0.0, -17.0, 1],
+    uPMatrix: mat4Perspective([], Math.PI / 4, 256 / 256, 0.1, 100),
+    // These might come from `skeletal-animation-system`
+    boneRotQuaternions0: jointDualQuats.rotQuaternions[0],
+    boneRotQuaternions1: jointDualQuats.rotQuaternions[1],
+    boneTransQuaternions0: jointDualQuats.transQuaternions[0],
+    boneTransQuaternions1: jointDualQuats.transQuaternions[1]
+  }
 })
 ```
 
@@ -79,6 +89,8 @@ var myOptions = {
 
 *type* `HTMLImageElement` or `Uint8Array`
 
+*Optional*
+
 You pass in an [HTMLImageElement](https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement) or [Uint8Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array) for your model's texture
 
 If using an image element, make sure that the onload event has already fired
@@ -98,13 +110,48 @@ TODO: Uint8Array example
 
 *Optional*
 
-lorem ipsum...
+A function that will be passed the number of joints and returns a fragment shader
+for your skinned 3d model.
+
+`load-collada-dae` comes with a default vertex shader generator.
+
+You would typically override it if the default shader didn't match your needs.
+For example, if you wanted to add in point lighting.
+
+```js
+function generatefragmentShader (opts) {
+  console.log(opts.numJoints)
+  // Some Number.. i.e. `12` (or however many joints your model has)
+
+  return `
+    // Some fragment shader
+  `
+}
+```
 
 ##### loadOptions.vertexShaderFunc
 
 *Optional*
 
-lorem ipsum...
+A function that will be passed the number of joints and returns a vertex shader
+for your skinned 3d model.
+
+`load-collada-dae` comes with a default vertex shader generator.
+
+You would typically override it if the default shader didn't match your needs.
+For example, if you wanted to add in point lighting.
+
+```js
+function generateVertexShader (opts) {
+  console.log(opts.numJoints)
+  // Some Number.. i.e. `12` (or however many joints your model has)
+
+  return `
+    // Your custom vertex shader
+  `
+}
+```
+
 
 ### Returned Model Object
 
@@ -114,65 +161,25 @@ We return a `model` object with a `draw` function
 
 ##### drawOptions
 
+TODO: Flesh out example.. For now look at the test directory
+
 ```js
-// Example overrides
-var myOptions = {
-  perspective: require('gl-mat4/perspective')([], Math.PI / 3, 512 / 512, 0.1, 30),
-  position: [5.0, 1.0, -20.0],
-  viewMatrix: [1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 10, 10, 1],
-  xRotation: Math.PI / 3,
-  yRotation: Math.PI / 2,
-  zRotation: Math.PI / 4
+// Example draw options
+var myDrawOptions = {
+  attributes: {},
+  uniforms: {}
 }
 ```
 
-###### drawOptions.perspective
+###### drawOptions.attributes
 
-Type: Array[16]
+```js
+```
 
-Default: `require('gl-mat4/perspective')([], Math.PI / 4, 256 / 256, 0.1, 100)`
+###### drawOptions.uniforms
 
-Your perspective matrix
-
-###### drawOptions.position
-
-Type: `Array[3]`
-
-Default: `[0.0, 0.0, -5.0]`
-
-The x, y and z position of your model in the world.
-
-###### drawOptions.viewMatrix
-
-Type: `Array[16]`
-
-Default: `[1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1]` (Identity Matrix)
-
-Your camera's view matrix
-
-##### drawOptions.interpolatedDualQuaternions
-
-type: `Array[n][8]`
-
-lorem ipsum
-
-##### drawOptions.xRotation
-
-type: `Number (radians)`
-
-lorem ipsum
-
-##### drawOptions.yRotation
-
-type: `Number (radians)`
-
-lorem ipsum
-
-##### drawOptions.zRotation
-
-type: `Number (radians)`
-
-lorem ipsum
+```js
+```
 
 ## TODO:
 
