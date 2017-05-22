@@ -36,6 +36,7 @@ var image = document.getElementById('some-already-loaded-image')
 var model = loadDae(gl, modelJSON, {texure: image})
 
 // Later inside of your render function
+gl.useProgram(model.shaderProgram)
 model.draw({
   attributes: model.attributes,
   uniforms: {
