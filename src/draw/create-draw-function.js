@@ -71,7 +71,7 @@ function createDrawFunction (gl, program, attributeData, uniformData, elementBuf
 
     // When buffering 4x4 matrices there's a transpose parameter that we'll need to add in
     var transposeParemeter = ''
-    if (uniformType === 'uniformMatrix4fv') {
+    if (uniformType === 'uniformMatrix4fv' || uniformType === 'uniformMatrix3fv') {
       // We do not support transposing the matrix input. The user can do this themselves before passing it in if they ever need to
       transposeParemeter = 'false,'
     }
