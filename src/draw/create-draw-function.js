@@ -20,6 +20,9 @@ var typeInformation = {
   bool: {
     uniformType: 'uniform1i'
   },
+  mat3: {
+    uniformType: 'uniformMatrix3fv'
+  },
   mat4: {
     uniformType: 'uniformMatrix4fv'
   },
