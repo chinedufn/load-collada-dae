@@ -128,13 +128,13 @@ function generateVertexShader (opts) {
         // about transposing it
         // @see https://www.cs.utah.edu/~ladislav/kavan07skinning/kavan07skinning.pdf for
         // vertex normal transformation equation
-        //
-        // TODO: This isn't working
-        vec3 transformedNormal = uNMatrix * (weightedMatrix * vec4(aVertexNormal, 0.0)).xyz;
+        vec3 transformedNormal = (weightedMatrix * vec4(aVertexNormal, 0.0)).xyz;
         y = transformedNormal.z;
         z = -transformedNormal.y;
         transformedNormal.y = y;
         transformedNormal.z = z;
+        // We convert our normal into column major before multiplying it with our normal matrix
+        transformedNormal = uNMatrix * transformedNormal;
 
         float directionalLightWeighting = max(dot(transformedNormal, uLightingDirection), 0.0);
         vLightWeighting = uAmbientColor + uDirectionalColor * directionalLightWeighting;
