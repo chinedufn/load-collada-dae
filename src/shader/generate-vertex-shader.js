@@ -40,6 +40,8 @@ function generateVertexShader (opts) {
     uniform mat4 uMVMatrix;
     uniform mat4 uPMatrix;
 
+    uniform mat3 uNMatrix;
+
     void main (void) {
       vec4 rotQuaternion[4];
       vec4 transQuaternion[4];
@@ -121,7 +123,12 @@ function generateVertexShader (opts) {
       leftWorldSpace.z = z;
 
       if (uUseLighting) {
-        vec3 transformedNormal = (weightedMatrix * vec4(aVertexNormal, 0.0)).xyz;
+        // Dual Quaternion skinning always leads to rigid transformation matrices so
+        // we only pass in the top left 3x3 of the modelMatrix without worrying
+        // about transposing it
+        // @see https://www.cs.utah.edu/~ladislav/kavan07skinning/kavan07skinning.pdf for
+        // vertex normal transformation equation
+        vec3 transformedNormal = uNMatrix * (weightedMatrix * vec4(aVertexNormal, 0.0)).xyz;
         y = transformedNormal.z;
         z = -transformedNormal.y;
         transformedNormal.y = y;
