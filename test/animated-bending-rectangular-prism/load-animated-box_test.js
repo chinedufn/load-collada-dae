@@ -55,6 +55,8 @@ test('Animated rectangular prism', function (t) {
       uDirectionalColor: [0, 0, 0],
       // Translation matrix with model positioned at [0, 0, -17]
       uMVMatrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0.0, 0.0, -17.0, 1],
+      // We aren't using lighting so we're inputting fake values
+      uNMatrix: [0, 0, 0, 0, 0, 0, 0, 0, 0],
       uPMatrix: mat4Perspective([], Math.PI / 4, 256 / 256, 0.1, 100),
       boneRotQuaternions0: jointDualQuats.rotQuaternions[0],
       boneRotQuaternions1: jointDualQuats.rotQuaternions[1],

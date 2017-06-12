@@ -30,7 +30,7 @@
   "homepage": "https://github.com/chinedufn/load-collada-dae#readme",
   "devDependencies": {
     "collada-dae-parser": "^0.9.0",
-    "gl": "^4.0.2",
+    "gl": "^4.0.3",
     "gl-mat3": "^1.0.0",
     "gl-quat": "^1.0.0",
     "image-diff": "^1.6.3",
