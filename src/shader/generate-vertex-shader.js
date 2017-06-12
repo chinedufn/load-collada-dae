@@ -128,6 +128,8 @@ function generateVertexShader (opts) {
         // about transposing it
         // @see https://www.cs.utah.edu/~ladislav/kavan07skinning/kavan07skinning.pdf for
         // vertex normal transformation equation
+        //
+        // TODO: This isn't working
         vec3 transformedNormal = uNMatrix * (weightedMatrix * vec4(aVertexNormal, 0.0)).xyz;
         y = transformedNormal.z;
         z = -transformedNormal.y;
