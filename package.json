@@ -42,6 +42,7 @@
   },
   "dependencies": {
     "create-draw-function": "0.0.1",
+    "create-shader-program": "^0.1.0",
     "expand-vertex-data": "^1.0.1",
     "get-attributes-uniforms": "^1.1.1",
     "gl-mat4": "^1.1.4",
