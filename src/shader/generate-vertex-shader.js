@@ -43,38 +43,20 @@ function generateVertexShader (opts) {
     uniform mat3 uNMatrix;
 
     void main (void) {
-      vec4 rotQuaternion[4];
-      vec4 transQuaternion[4];
+      // Blend our dual quaternion
+      vec4 weightedRotQuat =
+      boneRotQuaternions[int(aJointIndex.x)] * aJointWeight.x +
+      boneRotQuaternions[int(aJointIndex.y)] * aJointWeight.y +
+      boneRotQuaternions[int(aJointIndex.z)] * aJointWeight.z +
+      boneRotQuaternions[int(aJointIndex.w)] * aJointWeight.w;
 
-      for (int i = 0; i < ${opts.numJoints}; i++) {
-        if (aJointIndex.x == float(i)) {
-          rotQuaternion[0] = boneRotQuaternions[i];
-          transQuaternion[0] = boneTransQuaternions[i];
-        }
-        if (aJointIndex.y == float(i)) {
-          rotQuaternion[1] = boneRotQuaternions[i];
-          transQuaternion[1] = boneTransQuaternions[i];
-        }
-        if (aJointIndex.z == float(i)) {
-          rotQuaternion[2] = boneRotQuaternions[i];
-          transQuaternion[2] = boneTransQuaternions[i];
-        }
-        if (aJointIndex.w == float(i)) {
-          rotQuaternion[3] = boneRotQuaternions[i];
-          transQuaternion[3] = boneTransQuaternions[i];
-        }
-      }
+      vec4 weightedTransQuat =
+      boneTransQuaternions[int(aJointIndex.x)] * aJointWeight.x +
+      boneTransQuaternions[int(aJointIndex.y)] * aJointWeight.y +
+      boneTransQuaternions[int(aJointIndex.z)] * aJointWeight.z +
+      boneTransQuaternions[int(aJointIndex.w)] * aJointWeight.w;
 
-      vec4 weightedRotQuat = rotQuaternion[0] * aJointWeight.x +
-        rotQuaternion[1] * aJointWeight.y +
-        rotQuaternion[2] * aJointWeight.z +
-        rotQuaternion[3] * aJointWeight.w;
-
-      vec4 weightedTransQuat = transQuaternion[0] * aJointWeight.x +
-        transQuaternion[1] * aJointWeight.y +
-        transQuaternion[2] * aJointWeight.z +
-        transQuaternion[3] * aJointWeight.w;
-
+      // Normalize our dual quaternion
       float xRot = weightedRotQuat[0];
       float yRot = weightedRotQuat[1];
       float zRot = weightedRotQuat[2];
