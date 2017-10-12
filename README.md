@@ -1,6 +1,12 @@
 load-collada-dae [![npm version](https://badge.fury.io/js/load-collada-dae.svg)](http://badge.fury.io/js/load-collada-dae) [![Build Status](https://travis-ci.org/chinedufn/load-collada-dae.svg?branch=master)](https://travis-ci.org/chinedufn/load-collada-dae)
 ====================
 
+# Discontinued
+
+This is a very bad abstraction. Don't install this.
+
+---
+
 WORK IN PROGRESS
 ================
 
